@@ -1,0 +1,35 @@
+# Python / backend
+backend/.env
+backend/.venv/
+backend/__pycache__/
+backend/**/*.py[cod]
+backend/.mypy_cache/
+backend/.pytest_cache/
+
+# Frontend build / node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.turbo/
+
+# Project-level build / cache
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Outputs & uploads (runtime files)
+backend/outputs/*
+!backend/outputs/.gitignore
+
+backend/uploads/*
+!backend/uploads/.gitignore
+
+backend/uploadsZ/*
+!backend/uploadsZ/.gitignore
+
+# Docker / editor
+*.env.local
+.idea/
+.vscode/
