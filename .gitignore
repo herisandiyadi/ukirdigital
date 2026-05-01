@@ -19,6 +19,11 @@ frontend/.turbo/
 *.swp
 *.swo
 
+# Local test helper scripts (not part of app runtime)
+test_base_layer.py
+test_outline_fix.py
+test_profile_method.py
+
 # Outputs & uploads (runtime files)
 backend/outputs/*
 !backend/outputs/.gitignore
