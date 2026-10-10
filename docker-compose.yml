@@ -9,7 +9,8 @@ services:
     environment:
       POSTGRES_DB:       ${POSTGRES_DB:-png_converter_db}
       POSTGRES_USER:     ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      # BUG-S02: wajib diisi di .env — tidak ada default 'password'
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD wajib diisi di .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -27,8 +28,8 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      DATABASE_URL:         postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-png_converter_db}
-      SECRET_KEY:           ${SECRET_KEY:-change-me-in-production-use-long-random-string}
+      DATABASE_URL:         postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD wajib diisi di .env}@db:5432/${POSTGRES_DB:-png_converter_db}
+      SECRET_KEY:           ${SECRET_KEY:?SECRET_KEY wajib diisi di .env (min 32 karakter)}
       ANTHROPIC_API_KEY:    ${ANTHROPIC_API_KEY:-}
       SMTP_HOST:            ${SMTP_HOST:-}
       SMTP_PORT:            ${SMTP_PORT:-587}

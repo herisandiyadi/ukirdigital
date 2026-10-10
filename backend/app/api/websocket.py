@@ -4,9 +4,9 @@ WS /ws/{user_id}?token=<jwt>
 
 Event shapes (JSON):
   { "type": "job_status_update",  "job_id": "...", "status": "processing", "progress": 45 }
-  { "type": "job_completed",      "job_id": "...", "output_format": "stl",  "download_url": "..." }
+  { "type": "job_completed",      "job_id": "...", "output_files": { "stl": "<download_url>" } }
   { "type": "job_failed",         "job_id": "...", "error": "..." }
-  { "type": "usage_limit_warning","used": 8, "max": 10, "scope": "daily" }
+  { "type": "usage_limit_warning", "used": 8, "max": 10, "scope": "daily", "percent": 80 }
   { "type": "ping" }  →  { "type": "pong" }
 """
 import asyncio
@@ -169,14 +169,13 @@ async def notify_job_status(user_id: str, job_id: str, status: str, progress: in
 async def notify_job_completed(
     user_id: str,
     job_id: str,
-    output_format: str,
-    download_url: str,
+    output_files: dict[str, str],
 ) -> None:
+    """output_files: { fmt: download_url } — kontrak tunggal (BUG-F04)."""
     await ws_manager.send(user_id, {
         "type": "job_completed",
         "job_id": job_id,
-        "output_format": output_format,
-        "download_url": download_url,
+        "output_files": output_files,
     })
 
 

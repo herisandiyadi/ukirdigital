@@ -17,9 +17,9 @@ import app.models  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: create DB tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Skema dikelola Alembic (BUG-B07): migrasi dijalankan sebelum uvicorn
+    # start (lihat Dockerfile / `make migrate`). create_all dihapus karena
+    # tidak membuat tipe enum dan bisa menyimpang dari migrasi.
     # Seed default system settings
     async with AsyncSessionLocal() as db:
         await seed_system_settings(db)

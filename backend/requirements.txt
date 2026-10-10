@@ -24,3 +24,6 @@ python-dotenv==1.0.1
 httpx==0.28.1
 twilio==9.4.0
 openai==2.32.0
+# Dipakai app/services/maintenance_service.py — sebelumnya hilang dari
+# requirements sehingga container gagal start (ModuleNotFoundError).
+APScheduler==3.11.3
