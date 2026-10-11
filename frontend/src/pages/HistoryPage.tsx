@@ -109,7 +109,8 @@ export default function HistoryPage() {
             <p>Tidak ada riwayat konversi</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-sm">
             <thead className="bg-serat border-b">
               <tr>
                 {['File', 'Metode', 'Format', 'Status', 'Ukuran', 'Tanggal', 'Aksi'].map((h) => (
@@ -159,6 +160,7 @@ export default function HistoryPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
@@ -197,7 +199,7 @@ export default function HistoryPage() {
               </div>
             ) : detail && (
               <div className="space-y-4 text-sm">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     ['ID', detail.id],
                     ['File', detail.original_filename],
@@ -225,7 +227,7 @@ export default function HistoryPage() {
                   <div>
                     <p className="font-semibold text-ampas mb-2">Hasil Analisis AI</p>
                     <div className="bg-status-proses rounded-lg p-3 text-xs">
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {detail.ai_analysis.complexity && (
                           <div>
                             <p className="text-[11px] text-ampas">Complexity</p>

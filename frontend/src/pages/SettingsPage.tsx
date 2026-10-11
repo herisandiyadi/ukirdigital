@@ -281,7 +281,7 @@ export default function SettingsPage() {
             {/* Session info */}
             <div className="pt-4 border-t border-kayu">
               <h3 className="text-sm font-medium text-ampas mb-3">Account Status</h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div className="bg-serat rounded-lg p-3">
                   <p className="text-ampas">Account Status</p>
                   <p className="font-semibold text-status-sukses mt-0.5">Active</p>

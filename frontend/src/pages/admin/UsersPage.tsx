@@ -116,7 +116,8 @@ export default function UsersPage() {
 
       {/* Table */}
       <div className="card overflow-hidden p-0">
-        <table className="w-full text-sm">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full text-sm">
           <thead className="bg-serat border-b">
             <tr>
               {['User', 'Username', 'Role', 'Status', 'Konversi/Bulan', 'Terakhir Login', 'Aksi'].map((h) => (
@@ -167,6 +168,7 @@ export default function UsersPage() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Pagination */}
