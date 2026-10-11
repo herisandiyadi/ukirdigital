@@ -176,13 +176,26 @@ async def get_current_user(
     return user
 
 
+ADMIN_ROLES = ("admin", "superadmin")
+
+
 async def require_admin(current_user=Depends(get_current_user)):
-    """Dependency — hanya role admin yang boleh akses."""
+    """Dependency — admin dan superadmin boleh akses."""
     from app.models.user import UserRole
-    if current_user.role != UserRole.ADMIN:
+    if current_user.role not in (UserRole.ADMIN, UserRole.SUPERADMIN):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required",
         )
     return current_user
-    return user
+
+
+async def require_superadmin(current_user=Depends(get_current_user)):
+    """Dependency — hanya superadmin (kelola admin & pengaturan sistem)."""
+    from app.models.user import UserRole
+    if current_user.role != UserRole.SUPERADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Superadmin access required",
+        )
+    return current_user

@@ -9,6 +9,7 @@ from app.core.database import Base
 
 
 class UserRole(str, enum.Enum):
+    SUPERADMIN = "superadmin"  # kelola admin & pengaturan sistem (FEAT-SA01)
     ADMIN = "admin"
     USER = "user"
 
@@ -22,7 +23,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     full_name = Column(String(255), nullable=True)
     phone_number = Column(String(20), nullable=True)  # Format: +62812345678
-    role = Column(pgENUM("admin", "user", name="userrole", create_type=False), default="user", nullable=False)
+    role = Column(pgENUM("superadmin", "admin", "user", name="userrole", create_type=False), default="user", nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
     avatar_url = Column(String(500), nullable=True)

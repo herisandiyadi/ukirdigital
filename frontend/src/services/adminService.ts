@@ -78,14 +78,14 @@ export const exportLogsCSV = (params = {}) =>
 
 // ── Namespace object (used by pages that import `adminService`) ───────────────
 export const adminService = {
-  getStats:           () => api.get('/api/admin/stats/overview').then(r => r.data),
-  getCharts:          (days = 30) => api.get('/api/admin/stats/charts', { params: { days } }).then(r => r.data),
-  getJobs:            (params = {}) => api.get('/api/admin/jobs', { params }).then(r => r.data),
-  getUsers:           (params = {}) => api.get('/api/admin/users', { params }).then(r => r.data),
-  updateUser:         (id: string, data: object) => api.put(`/api/admin/users/${id}`, data).then(r => r.data),
-  updateUserLimits:   (id: string, data: object) => api.put(`/api/admin/users/${id}/limits`, data).then(r => r.data),
-  suspendUser:        (id: string) => api.post(`/api/admin/users/${id}/suspend`).then(r => r.data),
-  deleteUser:         (id: string) => api.delete(`/api/admin/users/${id}`).then(() => undefined),
+  getStats:           () => api.get('/admin/stats/overview').then(r => r.data),
+  getCharts:          (days = 30) => api.get('/admin/stats/charts', { params: { days } }).then(r => r.data),
+  getJobs:            (params = {}) => api.get('/admin/jobs', { params }).then(r => r.data),
+  getUsers:           (params = {}) => api.get('/admin/users', { params }).then(r => r.data),
+  updateUser:         (id: string, data: object) => api.put(`/admin/users/${id}`, data).then(r => r.data),
+  updateUserLimits:   (id: string, data: object) => api.put(`/admin/users/${id}/limits`, data).then(r => r.data),
+  suspendUser:        (id: string) => api.post(`/admin/users/${id}/suspend`).then(r => r.data),
+  deleteUser:         (id: string) => api.delete(`/admin/users/${id}`).then(() => undefined),
   getLogs:            (params = {}) => api.get('/admin/logs', { params }).then(r => r.data),
   getDefaultSettings: () => api.get('/admin/settings/defaults').then(r => r.data),
   updateDefaultSettings: (data: object) => api.put('/admin/settings/defaults', data).then(r => r.data),

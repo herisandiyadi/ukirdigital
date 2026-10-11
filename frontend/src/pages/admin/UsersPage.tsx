@@ -208,6 +208,7 @@ export default function UsersPage() {
               <select className="input" value={editForm.role ?? 'user'} onChange={(e) => setEditForm({ ...editForm, role: e.target.value as any })}>
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
+                {/* FEAT-SA01: role hanya bisa diubah superadmin; backend menolak selain itu */}
               </select>
             </div>
             <div className="flex items-center gap-2">

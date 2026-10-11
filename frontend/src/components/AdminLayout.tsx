@@ -17,6 +17,11 @@ const NAV = [
   { to: '/admin/stats',        icon: BarChart2,       label: 'Statistik & Laporan' },
 ]
 
+// FEAT-SA01: menu khusus superadmin (tampilan saja; backend penegak utama).
+const SUPERADMIN_NAV = [
+  { to: '/admin/admins', icon: Users, label: 'Kelola Admin', end: false },
+]
+
 export default function AdminLayout({ children }: { children?: ReactNode }) {
   const { user } = useAuthStore()
   const navigate = useNavigate()
@@ -51,6 +56,24 @@ export default function AdminLayout({ children }: { children?: ReactNode }) {
               {label}
             </NavLink>
           ))}
+
+          {user?.role === 'superadmin' && SUPERADMIN_NAV.map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                clsx(
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors mt-2',
+                  isActive
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                )
+              }
+            >
+              <Icon size={18} />
+              {label}
+            </NavLink>
+          ))}
         </nav>
 
         <div className="border-t border-gray-100 p-3 space-y-1">
@@ -67,7 +90,7 @@ export default function AdminLayout({ children }: { children?: ReactNode }) {
             </div>
             <div className="min-w-0 flex-1">
                <p className="truncate text-sm font-medium text-gray-900">{user?.username}</p>
-               <p className="truncate text-xs text-gray-500">Administrator</p>
+               <p className="truncate text-xs text-gray-500">{user?.role === 'superadmin' ? 'Superadmin' : 'Administrator'}</p>
             </div>
           </div>
             <button

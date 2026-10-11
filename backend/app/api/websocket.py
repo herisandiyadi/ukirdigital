@@ -111,7 +111,7 @@ async def websocket_endpoint(
             async with AsyncSessionLocal() as db:
                 result = await db.execute(select(User).where(User.id == uuid.UUID(token_user_id)))
                 caller = result.scalar_one_or_none()
-                if not caller or caller.role != UserRole.ADMIN:
+                if not caller or caller.role not in (UserRole.ADMIN, UserRole.SUPERADMIN):
                     await websocket.close(code=4003, reason="Forbidden")
                     return
         except Exception:

@@ -131,7 +131,7 @@ export default function SettingsPage() {
               <div>
                 <p className="font-semibold text-gray-900">{user?.username}</p>
                 <p className="text-sm text-gray-500">{user?.email}</p>
-                <span className={`badge mt-1 ${user?.role === 'admin' ? 'badge-red' : 'badge-indigo'}`}>
+                <span className={`badge mt-1 ${user?.role === 'admin' || user?.role === 'superadmin' ? 'badge-red' : 'badge-indigo'}`}>
                   {user?.role}
                 </span>
               </div>
