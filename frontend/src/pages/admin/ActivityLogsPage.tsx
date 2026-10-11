@@ -19,12 +19,12 @@ interface LogEntry {
 }
 
 const ACTION_COLORS: Record<string, string> = {
-  convert:  'badge-indigo',
-  download: 'badge-green',
-  delete:   'badge-red',
-  login:    'badge-blue',
-  register: 'badge-purple',
-  logout:   'badge-gray',
+  convert:  'badge-aksen',
+  download: 'badge-sukses',
+  delete:   'badge-gagal',
+  login:    'badge-proses',
+  register: 'badge-aksen',
+  logout:   'badge-netral',
 }
 
 const PAGE_SIZE = 50
@@ -98,7 +98,7 @@ export default function ActivityLogsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Activity Logs</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-ampas text-sm mt-1">
             {total.toLocaleString()} total log entries
           </p>
         </div>
@@ -122,8 +122,8 @@ export default function ActivityLogsPage() {
             onClick={() => setShowFilters(v => !v)}
             className={`flex items-center gap-2 text-sm px-3 py-2 rounded-lg border transition-colors ${
               showFilters
-                ? 'bg-indigo-600 border-indigo-500 text-white'
-                : 'border-slate-600 text-slate-300 hover:bg-slate-700'
+                ? 'bg-kuningan border-kuningan text-white'
+                : 'border-ampas text-ampas hover:bg-ampas'
             }`}
           >
             <FunnelIcon className="w-4 h-4" />
@@ -134,11 +134,11 @@ export default function ActivityLogsPage() {
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-4 space-y-4">
+        <div className="bg-arang border border-ampas rounded-xl p-4 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {/* Username search */}
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-2.5 w-4 h-4 text-ampas" />
               <input
                 type="text"
                 placeholder="Username / User ID…"
@@ -189,7 +189,7 @@ export default function ActivityLogsPage() {
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="flex items-center gap-1 text-sm text-slate-400 hover:text-white transition-colors"
+              className="flex items-center gap-1 text-sm text-ampas hover:text-white transition-colors"
             >
               <XMarkIcon className="w-4 h-4" />
               Clear all filters
@@ -199,32 +199,32 @@ export default function ActivityLogsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+      <div className="bg-arang border border-ampas rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-left">
-                <th className="px-4 py-3 text-slate-400 font-medium">Time</th>
-                <th className="px-4 py-3 text-slate-400 font-medium">User</th>
-                <th className="px-4 py-3 text-slate-400 font-medium">Action</th>
-                <th className="px-4 py-3 text-slate-400 font-medium">IP Address</th>
-                <th className="px-4 py-3 text-slate-400 font-medium">User ID</th>
+              <tr className="border-b border-ampas text-left">
+                <th className="px-4 py-3 text-ampas font-medium">Time</th>
+                <th className="px-4 py-3 text-ampas font-medium">User</th>
+                <th className="px-4 py-3 text-ampas font-medium">Action</th>
+                <th className="px-4 py-3 text-ampas font-medium">IP Address</th>
+                <th className="px-4 py-3 text-ampas font-medium">User ID</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 Array.from({ length: 10 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-700/50">
+                  <tr key={i} className="border-b border-ampas/50">
                     {Array.from({ length: 5 }).map((_, j) => (
                       <td key={j} className="px-4 py-3">
-                        <div className="h-4 bg-slate-700 rounded animate-pulse w-24" />
+                        <div className="h-4 bg-ampas rounded animate-pulse w-24" />
                       </td>
                     ))}
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-4 py-12 text-center text-ampas">
                     No log entries found
                   </td>
                 </tr>
@@ -232,9 +232,9 @@ export default function ActivityLogsPage() {
                 filtered.map(log => (
                   <tr
                     key={log.id}
-                    className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
+                    className="border-b border-ampas/50 hover:bg-ampas/30 transition-colors"
                   >
-                    <td className="px-4 py-3 text-slate-300 whitespace-nowrap font-mono text-xs">
+                    <td className="px-4 py-3 text-ampas whitespace-nowrap font-mono text-xs">
                       {new Date(log.created_at).toLocaleString()}
                     </td>
                     <td className="px-4 py-3">
@@ -243,16 +243,16 @@ export default function ActivityLogsPage() {
                     <td className="px-4 py-3">
                       <span
                         className={`badge ${
-                          ACTION_COLORS[log.action] ?? 'badge-gray'
+                          ACTION_COLORS[log.action] ?? 'badge-netral'
                         } capitalize`}
                       >
                         {log.action}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-400">
+                    <td className="px-4 py-3 font-mono text-xs text-ampas">
                       {log.ip_address ?? '—'}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-500 truncate max-w-[140px]">
+                    <td className="px-4 py-3 font-mono text-xs text-ampas truncate max-w-[140px]">
                       {log.user_id}
                     </td>
                   </tr>
@@ -264,24 +264,24 @@ export default function ActivityLogsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700">
-            <span className="text-sm text-slate-400">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-ampas">
+            <span className="text-sm text-ampas">
               Page {page + 1} of {totalPages} ({total.toLocaleString()} entries)
             </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(p => Math.max(0, p - 1))}
                 disabled={page === 0}
-                className="px-3 py-1.5 text-sm rounded-lg border border-slate-600 text-slate-300
-                           hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 text-sm rounded-lg border border-ampas text-ampas
+                           hover:bg-ampas disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 Previous
               </button>
               <button
                 onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                 disabled={page >= totalPages - 1}
-                className="px-3 py-1.5 text-sm rounded-lg border border-slate-600 text-slate-300
-                           hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 text-sm rounded-lg border border-ampas text-ampas
+                           hover:bg-ampas disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 Next
               </button>

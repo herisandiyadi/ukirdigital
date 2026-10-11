@@ -97,20 +97,20 @@ export default function SettingsPage() {
     <div className="max-w-2xl mx-auto space-y-6 py-6 px-4">
 
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
-        <p className="text-gray-500 text-sm mt-1">Manage your profile, password, and plan limits</p>
+        <h1 className="text-2xl font-bold text-arang">Account Settings</h1>
+        <p className="text-ampas text-sm mt-1">Manage your profile, password, and plan limits</p>
       </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-kayu">
           {tabs.map(({ id, label, Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === id
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-kuningan text-kuningan'
+                  : 'border-transparent text-ampas hover:text-ampas'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -124,14 +124,14 @@ export default function SettingsPage() {
           <div className="card space-y-6">
             {/* Avatar */}
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-kuningan to-kuningan
                               flex items-center justify-center text-white text-2xl font-bold select-none">
                 {(user?.username?.[0] ?? '?').toUpperCase()}
               </div>
               <div>
-                <p className="font-semibold text-gray-900">{user?.username}</p>
-                <p className="text-sm text-gray-500">{user?.email}</p>
-                <span className={`badge mt-1 ${user?.role === 'admin' || user?.role === 'superadmin' ? 'badge-red' : 'badge-indigo'}`}>
+                <p className="font-semibold text-arang">{user?.username}</p>
+                <p className="text-sm text-ampas">{user?.email}</p>
+                <span className={`badge mt-1 ${user?.role === 'admin' || user?.role === 'superadmin' ? 'badge-gagal' : 'badge-aksen'}`}>
                   {user?.role}
                 </span>
               </div>
@@ -139,8 +139,8 @@ export default function SettingsPage() {
 
             {/* Verified badge */}
             {meData?.is_verified && (
-              <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50
-                              border border-green-200 rounded-lg px-3 py-2">
+              <div className="flex items-center gap-2 text-sm text-status-sukses bg-status-sukses
+                              border border-status-sukses rounded-lg px-3 py-2">
                 <CheckCircleIcon className="w-4 h-4" />
                 Email verified
               </div>
@@ -151,7 +151,7 @@ export default function SettingsPage() {
               className="space-y-4"
             >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-ampas mb-1">Full Name</label>
                 <input
                   {...profileForm.register('full_name')}
                   className="input w-full"
@@ -159,7 +159,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-ampas mb-1">Email</label>
                 <input
                   {...profileForm.register('email', {
                     required: 'Email is required',
@@ -169,19 +169,19 @@ export default function SettingsPage() {
                   className="input w-full"
                 />
                 {profileForm.formState.errors.email && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-status-gagal text-xs mt-1">
                     {profileForm.formState.errors.email.message}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <label className="block text-sm font-medium text-ampas mb-1">Username</label>
                 <input
                   value={user?.username ?? ''}
                   disabled
-                  className="input w-full bg-gray-50 text-gray-400 cursor-not-allowed"
+                  className="input w-full bg-serat text-ampas/70 cursor-not-allowed"
                 />
-                <p className="text-xs text-gray-400 mt-1">Username cannot be changed</p>
+                <p className="text-xs text-ampas/70 mt-1">Username cannot be changed</p>
               </div>
               <PhoneInput
                 value={profileForm.watch('phone_number') || ''}
@@ -208,13 +208,13 @@ export default function SettingsPage() {
         {activeTab === 'security' && (
           <div className="card space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
-              <p className="text-sm text-gray-500">Use a strong password with at least 8 characters.</p>
+              <h2 className="text-lg font-semibold text-arang">Change Password</h2>
+              <p className="text-sm text-ampas">Use a strong password with at least 8 characters.</p>
             </div>
 
             <form onSubmit={pwForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-ampas mb-1">
                   Current Password
                 </label>
                 <input
@@ -224,14 +224,14 @@ export default function SettingsPage() {
                   autoComplete="current-password"
                 />
                 {pwForm.formState.errors.current_password && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-status-gagal text-xs mt-1">
                     {pwForm.formState.errors.current_password.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-ampas mb-1">
                   New Password
                 </label>
                 <input
@@ -244,14 +244,14 @@ export default function SettingsPage() {
                   autoComplete="new-password"
                 />
                 {pwForm.formState.errors.new_password && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-status-gagal text-xs mt-1">
                     {pwForm.formState.errors.new_password.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-ampas mb-1">
                   Confirm New Password
                 </label>
                 <input
@@ -261,7 +261,7 @@ export default function SettingsPage() {
                   autoComplete="new-password"
                 />
                 {pwForm.formState.errors.confirm_password && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-status-gagal text-xs mt-1">
                     {pwForm.formState.errors.confirm_password.message}
                   </p>
                 )}
@@ -279,30 +279,30 @@ export default function SettingsPage() {
             </form>
 
             {/* Session info */}
-            <div className="pt-4 border-t border-gray-100">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Account Status</h3>
+            <div className="pt-4 border-t border-kayu">
+              <h3 className="text-sm font-medium text-ampas mb-3">Account Status</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-gray-500">Account Status</p>
-                  <p className="font-semibold text-green-600 mt-0.5">Active</p>
+                <div className="bg-serat rounded-lg p-3">
+                  <p className="text-ampas">Account Status</p>
+                  <p className="font-semibold text-status-sukses mt-0.5">Active</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-gray-500">Last Login</p>
-                  <p className="font-semibold text-gray-900 mt-0.5">
+                <div className="bg-serat rounded-lg p-3">
+                  <p className="text-ampas">Last Login</p>
+                  <p className="font-semibold text-arang mt-0.5">
                     {meData?.last_login
                       ? new Date(meData.last_login).toLocaleDateString()
                       : '—'}
                   </p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-gray-500">Email Verified</p>
-                  <p className={`font-semibold mt-0.5 ${meData?.is_verified ? 'text-green-600' : 'text-yellow-600'}`}>
+                <div className="bg-serat rounded-lg p-3">
+                  <p className="text-ampas">Email Verified</p>
+                  <p className={`font-semibold mt-0.5 ${meData?.is_verified ? 'text-status-sukses' : 'text-kuningan'}`}>
                     {meData?.is_verified ? 'Yes' : 'Pending'}
                   </p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-gray-500">Member Since</p>
-                  <p className="font-semibold text-gray-900 mt-0.5">
+                <div className="bg-serat rounded-lg p-3">
+                  <p className="text-ampas">Member Since</p>
+                  <p className="font-semibold text-arang mt-0.5">
                     {meData?.created_at
                       ? new Date(meData.created_at).toLocaleDateString()
                       : '—'}
@@ -317,8 +317,8 @@ export default function SettingsPage() {
       {activeTab === 'limits' && (
         <div className="card space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Plan & Limits</h2>
-            <p className="text-sm text-gray-500">Your current usage limits assigned by the administrator.</p>
+            <h2 className="text-lg font-semibold text-arang">Plan & Limits</h2>
+            <p className="text-sm text-ampas">Your current usage limits assigned by the administrator.</p>
           </div>
 
           {lim ? (
@@ -342,27 +342,27 @@ export default function SettingsPage() {
                 unit="MB"
               />
               {/* Formats */}
-              <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                <span className="text-sm text-gray-600 font-medium">Output Formats</span>
+              <div className="flex items-center justify-between py-3 border-b border-kayu">
+                <span className="text-sm text-ampas font-medium">Output Formats</span>
                 <div className="flex gap-2">
                   {lim.allowed_formats?.map((f: string) => (
-                    <span key={f} className="badge badge-indigo uppercase">{f}</span>
+                    <span key={f} className="badge badge-aksen uppercase">{f}</span>
                   ))}
                 </div>
               </div>
               {/* AI Analysis */}
               <div className="flex items-center justify-between py-3">
-                <span className="text-sm text-gray-600 font-medium">AI Image Analysis</span>
-                <span className={`badge ${lim.use_ai_analysis ? 'badge-green' : 'badge-gray'}`}>
+                <span className="text-sm text-ampas font-medium">AI Image Analysis</span>
+                <span className={`badge ${lim.use_ai_analysis ? 'badge-sukses' : 'badge-netral'}`}>
                   {lim.use_ai_analysis ? 'Enabled' : 'Disabled'}
                 </span>
               </div>
             </div>
           ) : (
-            <p className="text-gray-400 text-sm">No limit data available.</p>
+            <p className="text-ampas/70 text-sm">No limit data available.</p>
           )}
 
-          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-sm text-indigo-700">
+          <div className="bg-kuningan border border-kuningan rounded-lg p-4 text-sm text-kuningan">
             To upgrade your limits, contact an administrator.
           </div>
         </div>
@@ -375,10 +375,10 @@ export default function SettingsPage() {
 
 function LimitRow({ label, value, unit }: { label: string; value: number; unit: string }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100">
-      <span className="text-sm text-gray-600 font-medium">{label}</span>
-      <span className="font-semibold text-gray-900">
-        {value.toLocaleString()} <span className="text-gray-400 font-normal text-xs">{unit}</span>
+    <div className="flex items-center justify-between py-3 border-b border-kayu">
+      <span className="text-sm text-ampas font-medium">{label}</span>
+      <span className="font-semibold text-arang">
+        {value.toLocaleString()} <span className="text-ampas/70 font-normal text-xs">{unit}</span>
       </span>
     </div>
   )

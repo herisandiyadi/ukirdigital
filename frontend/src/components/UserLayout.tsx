@@ -24,10 +24,10 @@ export default function UserLayout({ children }: { children?: ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-serat">
       {/* Sidebar */}
-      <aside className="flex w-60 flex-col bg-white border-r border-gray-200">
-        <div className="flex items-center gap-2 px-5 py-5 border-b border-gray-100">
+      <aside className="flex w-60 flex-col bg-white border-r border-kayu">
+        <div className="flex items-center gap-2 px-5 py-5 border-b border-kayu">
           <img
             src="/ukirdigital-logo.png"
             alt="ukir digital logo"
@@ -45,7 +45,7 @@ export default function UserLayout({ children }: { children?: ReactNode }) {
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                   isActive
                     ? 'bg-primary-50 text-primary-700'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    : 'text-ampas hover:bg-kayu/30 hover:text-arang'
                 )
               }
             >
@@ -62,7 +62,7 @@ export default function UserLayout({ children }: { children?: ReactNode }) {
                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors mt-2',
                    isActive
                      ? 'bg-primary-50 text-primary-700'
-                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                     : 'text-ampas hover:bg-kayu/30 hover:text-arang'
                  )
                }
              >
@@ -72,17 +72,17 @@ export default function UserLayout({ children }: { children?: ReactNode }) {
           )}
         </nav>
 
-        <div className="border-t border-gray-100 p-3">
+        <div className="border-t border-kayu p-3">
           <div className="flex items-center gap-3 rounded-lg px-2 py-2 mb-1">
             <div className="h-8 w-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 font-semibold text-sm">
               {user?.username?.[0]?.toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-gray-900">{user?.full_name || user?.username}</p>
-              <p className="truncate text-xs text-gray-500">{user?.email}</p>
+              <p className="truncate text-sm font-medium text-arang">{user?.full_name || user?.username}</p>
+              <p className="truncate text-xs text-ampas">{user?.email}</p>
             </div>
           </div>
-          <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-red-600 transition-colors">
+          <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-ampas hover:bg-kayu/30 hover:text-status-gagal transition-colors">
             <LogOut size={16} />
             Keluar
           </button>

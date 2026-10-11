@@ -30,7 +30,7 @@ import { RequireAuth, RequireAdmin, RequireSuperadmin } from './components/Requi
 function PageLoader() {
   return (
     <div className="flex h-full w-full items-center justify-center py-24">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-kuningan border-t-indigo-600" />
     </div>
   )
 }

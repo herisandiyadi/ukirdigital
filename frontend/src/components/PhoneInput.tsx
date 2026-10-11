@@ -35,7 +35,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   return (
     <div>
       <label className="label">
-        Nomor Telepon <span className="text-red-500">*</span>
+        Nomor Telepon <span className="text-status-gagal">*</span>
       </label>
       <input
         type="tel"
@@ -43,10 +43,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
         onChange={handleChange}
         placeholder="+62812345678"
         disabled={disabled}
-        className={`input ${error ? 'border-red-500 focus:border-red-500' : ''}`}
+        className={`input ${error ? 'border-status-gagal focus:border-status-gagal' : ''}`}
       />
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
-      <p className="text-xs text-gray-500 mt-1">
+      {error && <p className="text-xs text-status-gagal mt-1">{error}</p>}
+      <p className="text-xs text-ampas mt-1">
         Format: +countrycode+phonenumber (contoh: +62812345678)
       </p>
     </div>

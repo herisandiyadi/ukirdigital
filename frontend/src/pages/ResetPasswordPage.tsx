@@ -46,11 +46,11 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-kuningan p-4">
       <div className="w-full max-w-md">
         <div className="card">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Reset Password</h2>
-          <p className="text-gray-500 text-sm text-center mb-6">Masukkan password baru untuk akun Anda.</p>
+          <h2 className="text-2xl font-bold text-arang mb-2 text-center">Reset Password</h2>
+          <p className="text-ampas text-sm text-center mb-6">Masukkan password baru untuk akun Anda.</p>
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
@@ -75,13 +75,13 @@ export default function ResetPasswordPage() {
                 required
               />
             </div>
-            {error && <p className="text-xs text-red-500">{error}</p>}
+            {error && <p className="text-xs text-status-gagal">{error}</p>}
             <button type="submit" disabled={loading} className="btn-primary w-full py-2.5">
               {loading ? 'Menyimpan...' : 'Simpan Password Baru'}
             </button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-ampas">
             Ingat password Anda?{' '}
             <Link to="/login" className="text-primary-600 font-medium hover:underline">Masuk</Link>
           </p>

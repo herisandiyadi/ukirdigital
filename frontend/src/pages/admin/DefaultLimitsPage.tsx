@@ -96,8 +96,8 @@ export default function DefaultLimitsPage() {
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Pengaturan Limit Default</h1>
-          <p className="text-gray-500 text-sm mt-1">Berlaku untuk user baru yang mendaftar.</p>
+          <h1 className="text-2xl font-bold text-arang">Pengaturan Limit Default</h1>
+          <p className="text-ampas text-sm mt-1">Berlaku untuk user baru yang mendaftar.</p>
         </div>
         <button onClick={() => setConfirmSave(true)} className="btn-primary gap-2">
           <Save size={16} /> Simpan Semua
@@ -106,7 +106,7 @@ export default function DefaultLimitsPage() {
 
       {/* Section 1 */}
       <div className="card space-y-4">
-        <h2 className="font-semibold text-gray-900">Default Limit User Baru</h2>
+        <h2 className="font-semibold text-arang">Default Limit User Baru</h2>
         <div className="grid grid-cols-2 gap-4">
            {[
             [['default_user_limits','max_conversions_per_day'],'Max Konversi/Hari'],
@@ -140,14 +140,14 @@ export default function DefaultLimitsPage() {
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="ai_def" checked={!!dl.use_ai_analysis} onChange={(e) => setDef(['default_user_limits','use_ai_analysis'], e.target.checked)} />
-          <label htmlFor="ai_def" className="text-sm text-gray-700">Akses AI Analysis (default)</label>
+          <label htmlFor="ai_def" className="text-sm text-ampas">Akses AI Analysis (default)</label>
         </div>
       </div>
 
       {/* Section 2: Presets */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-gray-900">Preset Paket</h2>
+          <h2 className="font-semibold text-arang">Preset Paket</h2>
           <button onClick={() => { setEditPreset({ name:'', max_conversions_per_day:10, max_conversions_per_month:100, max_file_size_mb:10, allowed_formats:['stl'], use_ai_analysis:false }); setIsNewPreset(true) }} className="btn-secondary text-xs gap-1">
             <Plus size={13} /> Tambah Paket
           </button>
@@ -156,7 +156,7 @@ export default function DefaultLimitsPage() {
           <thead className="border-b">
             <tr>
               {['Nama','Konversi/Hari','Konversi/Bulan','Max MB','Format','AI','Aksi'].map((h) => (
-                <th key={h} className="text-left py-2 px-2 text-xs font-semibold text-gray-500 uppercase">{h}</th>
+                <th key={h} className="text-left py-2 px-2 text-xs font-semibold text-ampas uppercase">{h}</th>
               ))}
             </tr>
           </thead>
@@ -171,20 +171,20 @@ export default function DefaultLimitsPage() {
                 <td className="py-2 px-2">{p.use_ai_analysis ? '✅' : '—'}</td>
                 <td className="py-2 px-2">
                   <div className="flex gap-1">
-                    <button onClick={() => { setEditPreset(p); setIsNewPreset(false) }} className="p-1 rounded hover:bg-gray-100 text-gray-500"><Edit2 size={13} /></button>
-                    <button onClick={() => handlePresetDelete(p.id)} className="p-1 rounded hover:bg-gray-100 text-red-500"><Trash2 size={13} /></button>
+                    <button onClick={() => { setEditPreset(p); setIsNewPreset(false) }} className="p-1 rounded hover:bg-kayu/30 text-ampas"><Edit2 size={13} /></button>
+                    <button onClick={() => handlePresetDelete(p.id)} className="p-1 rounded hover:bg-kayu/30 text-status-gagal"><Trash2 size={13} /></button>
                   </div>
                 </td>
               </tr>
             ))}
-            {presets.length === 0 && <tr><td colSpan={7} className="text-center py-6 text-gray-400">Belum ada preset.</td></tr>}
+            {presets.length === 0 && <tr><td colSpan={7} className="text-center py-6 text-ampas/70">Belum ada preset.</td></tr>}
           </tbody>
         </table>
       </div>
 
       {/* Section 3: Conversion defaults */}
       <div className="card space-y-4">
-        <h2 className="font-semibold text-gray-900">Setting Konversi Default</h2>
+        <h2 className="font-semibold text-arang">Setting Konversi Default</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Metode Default</label>
@@ -212,7 +212,7 @@ export default function DefaultLimitsPage() {
 
       {/* Section 4: AI */}
       <div className="card space-y-4">
-        <h2 className="font-semibold text-gray-900">AI Settings</h2>
+        <h2 className="font-semibold text-arang">AI Settings</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Provider</label>
@@ -225,7 +225,7 @@ export default function DefaultLimitsPage() {
               <option value="openai">OpenAI</option>
               <option value="custom">Custom OpenAI-compatible</option>
             </select>
-            <p className="text-[11px] text-gray-400 mt-1">Gunakan provider OpenAI-compatible (model chat.completions).</p>
+            <p className="text-[11px] text-ampas/70 mt-1">Gunakan provider OpenAI-compatible (model chat.completions).</p>
           </div>
           <div>
             <label className="label">API Key</label>
@@ -245,7 +245,7 @@ export default function DefaultLimitsPage() {
               value={ai.base_url ?? ''}
               onChange={(e) => setDef(['ai','base_url'], e.target.value)}
             />
-            <p className="text-[11px] text-gray-400 mt-1">Untuk provider custom isi URL endpoint OpenAI-compatible.</p>
+            <p className="text-[11px] text-ampas/70 mt-1">Untuk provider custom isi URL endpoint OpenAI-compatible.</p>
           </div>
           <div>
             <label className="label">Model</label>
@@ -258,7 +258,7 @@ export default function DefaultLimitsPage() {
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="auto_ai" checked={!!ai.analyze_before_convert} onChange={(e) => setDef(['ai','analyze_before_convert'], e.target.checked)} />
-          <label htmlFor="auto_ai" className="text-sm text-gray-700">Auto-analisis sebelum konversi</label>
+          <label htmlFor="auto_ai" className="text-sm text-ampas">Auto-analisis sebelum konversi</label>
         </div>
       </div>
 
@@ -267,10 +267,10 @@ export default function DefaultLimitsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4">
             <div className="flex items-start gap-3">
-              <AlertCircle size={22} className="text-orange-500 flex-shrink-0 mt-0.5" />
+              <AlertCircle size={22} className="text-kuningan flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-gray-900">Konfirmasi Simpan</h3>
-                <p className="text-sm text-gray-500 mt-1">Perubahan ini tidak mempengaruhi user yang sudah ada, hanya berlaku untuk user baru.</p>
+                <h3 className="font-semibold text-arang">Konfirmasi Simpan</h3>
+                <p className="text-sm text-ampas mt-1">Perubahan ini tidak mempengaruhi user yang sudah ada, hanya berlaku untuk user baru.</p>
               </div>
             </div>
             <div className="flex gap-3">

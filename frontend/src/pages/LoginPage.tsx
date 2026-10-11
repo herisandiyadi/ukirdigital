@@ -40,7 +40,7 @@ export default function LoginPage() {
             />
           </div>
           <h1 className="text-2xl font-bold text-white">Masuk ke ukir digital</h1>
-          <p className="text-gray-400 mt-1 text-sm">Convert gambar ke relief 3D siap CNC & STL</p>
+          <p className="text-ampas/70 mt-1 text-sm">Convert gambar ke relief 3D siap CNC & STL</p>
         </div>
 
         <div className="card">
@@ -53,7 +53,7 @@ export default function LoginPage() {
                 className="input"
                 placeholder="email@contoh.com"
               />
-              {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
+              {errors.email && <p className="text-xs text-status-gagal mt-1">{errors.email.message}</p>}
             </div>
             <div>
               <label className="label">Password</label>
@@ -63,7 +63,7 @@ export default function LoginPage() {
                 className="input"
                 placeholder="••••••••"
               />
-              {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
+              {errors.password && <p className="text-xs text-status-gagal mt-1">{errors.password.message}</p>}
             </div>
             <div className="flex items-center justify-end">
               <Link to="/forgot-password" className="text-xs text-primary-600 hover:underline">
@@ -74,7 +74,7 @@ export default function LoginPage() {
               {loading ? 'Memproses...' : 'Masuk'}
             </button>
           </form>
-          {/* <p className="mt-4 text-center text-sm text-gray-500">
+          {/* <p className="mt-4 text-center text-sm text-ampas">
             Belum punya akun?{' '}
             <Link to="/register" className="text-primary-600 font-medium hover:underline">Daftar gratis</Link>
           </p> */}

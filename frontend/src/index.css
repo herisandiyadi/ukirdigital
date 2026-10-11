@@ -12,18 +12,20 @@
 @layer components {
   /* Tombol primer: kuningan, teks serat. Fokus ring kuningan 2px. */
   .btn-primary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-kuningan px-4 py-2 text-sm font-semibold text-serat transition-colors duration-150 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-kuningan px-4 py-2 text-sm font-semibold  transition-colors duration-150 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
+    color: #F7F3EA !important;
   }
   /* Tombol sekunder: batas kayu. */
   .btn-secondary {
     @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded border border-kayu bg-serat px-4 py-2 text-sm font-semibold text-arang transition-colors duration-150 hover:bg-kayu/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-danger {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-status-gagal px-4 py-2 text-sm font-semibold text-serat transition-colors duration-150 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-status-gagal px-4 py-2 text-sm font-semibold transition-colors duration-150 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
+    color: #F7F3EA;
   }
   /* Kartu: radius 10px, batas 1px kayu. */
   .card {
-    @apply rounded-kartu border border-kayu bg-white p-6;
+    @apply rounded-[10px] border border-kayu bg-white p-6;
   }
   /* Input: label di atas, radius 6px, fokus kuningan. */
   .input {
@@ -32,8 +34,13 @@
   .label {
     @apply block text-sm font-medium text-ampas mb-1;
   }
-  /* Chip status: teks + ikon, bukan warna saja. */
+  /* Chip status: teks + ikon, bukan warna saja. Radius chip boleh pill (aturan v2). */
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold;
   }
+  .badge-sukses { color: #2F5E2A; border-color: rgb(47 94 42 / 0.40); background-color: rgb(47 94 42 / 0.10); }
+  .badge-gagal  { color: #9A2E1A; border-color: rgb(154 46 26 / 0.40); background-color: rgb(154 46 26 / 0.10); }
+  .badge-proses { color: #24557A; border-color: rgb(36 85 122 / 0.40); background-color: rgb(36 85 122 / 0.10); }
+  .badge-netral { color: #5C4A36; border-color: #D8C7A8; background-color: #F7F3EA; }
+  .badge-aksen  { color: #8A4F12; border-color: rgb(138 79 18 / 0.40); background-color: rgb(138 79 18 / 0.10); }
 }
