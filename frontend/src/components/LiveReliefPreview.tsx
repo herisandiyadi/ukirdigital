@@ -129,7 +129,7 @@ export default function LiveReliefPreview({
       if (smoothing > 0) {
         const c = document.createElement('canvas')
         c.width = w; c.height = h
-        const ctx = c.getContext('2d', { willReadFrequently: true })!
+        const ctx = c.getContext('2d')!
         const id = ctx.createImageData(w, h)
         for (let i = 0, p = 0; i < gray.length; i++, p += 4) {
           const v = gray[i]
@@ -139,7 +139,7 @@ export default function LiveReliefPreview({
         ctx.putImageData(id, 0, 0)
         const c2 = document.createElement('canvas')
         c2.width = w; c2.height = h
-        const ctx2 = c2.getContext('2d', { willReadFrequently: true })!
+        const ctx2 = c2.getContext('2d')!
         ctx2.filter = `blur(${smoothing}px)`
         ctx2.drawImage(c, 0, 0)
         const out = ctx2.getImageData(0, 0, w, h).data
