@@ -72,12 +72,12 @@ export default function HistoryPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Riwayat Konversi</h1>
+      <h1 className="text-2xl font-bold text-arang mb-6">Riwayat Konversi</h1>
 
       {/* Filter bar */}
       <div className="card mb-6 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-48">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ampas/70" />
           <input
             className="input pl-9"
             placeholder="Cari nama file..."
@@ -102,55 +102,55 @@ export default function HistoryPage() {
       {/* Table */}
       <div className="card overflow-hidden p-0">
         {loading ? (
-          <div className="flex items-center justify-center h-40 text-gray-400">Memuat...</div>
+          <div className="flex items-center justify-center h-40 text-ampas/70">Memuat...</div>
         ) : jobs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-40 text-gray-400 gap-2">
+          <div className="flex flex-col items-center justify-center h-40 text-ampas/70 gap-2">
             <Search size={32} />
             <p>Tidak ada riwayat konversi</p>
           </div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-serat border-b">
               <tr>
                 {['File', 'Metode', 'Format', 'Status', 'Ukuran', 'Tanggal', 'Aksi'].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ampas uppercase tracking-wide">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-kayu">
               {jobs.map((job) => (
-                <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={job.id} className="hover:bg-serat transition-colors">
                   <td className="px-4 py-3 max-w-xs">
-                    <p className="font-medium text-gray-900 truncate">{job.original_filename}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{job.id.slice(0, 8)}</p>
+                    <p className="font-medium text-arang truncate">{job.original_filename}</p>
+                    <p className="text-xs text-ampas/70 mt-0.5">{job.id.slice(0, 8)}</p>
                   </td>
-                  <td className="px-4 py-3 capitalize text-gray-700">{job.method}</td>
+                  <td className="px-4 py-3 capitalize text-ampas">{job.method}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 flex-wrap">
                       {job.output_files
                         ? Object.keys(job.output_files).map((f) => (
-                            <span key={f} className="badge bg-indigo-100 text-indigo-700 uppercase">{f}</span>
+                            <span key={f} className="badge bg-kuningan text-kuningan uppercase">{f}</span>
                           ))
-                        : <span className="text-gray-400">—</span>
+                        : <span className="text-ampas/70">—</span>
                       }
                     </div>
                   </td>
                   <td className="px-4 py-3"><StatusBadge status={job.status} /></td>
-                  <td className="px-4 py-3 text-gray-500">{fmtBytes(job.file_size_bytes)}</td>
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                  <td className="px-4 py-3 text-ampas">{fmtBytes(job.file_size_bytes)}</td>
+                  <td className="px-4 py-3 text-ampas whitespace-nowrap">
                     {new Date(job.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
                       {job.status === 'completed' && (
-                        <button onClick={() => downloadAllFiles(job.id)} title="Download ZIP" className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-primary-600">
+                        <button onClick={() => downloadAllFiles(job.id)} title="Download ZIP" className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-primary-600">
                           <Download size={15} />
                         </button>
                       )}
-                      <button onClick={() => handleDetail(job.id)} title="Detail" className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-blue-600">
+                      <button onClick={() => handleDetail(job.id)} title="Detail" className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-proses">
                         <Eye size={15} />
                       </button>
-                      <button onClick={() => handleDelete(job.id)} title="Hapus" className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-red-600">
+                      <button onClick={() => handleDelete(job.id)} title="Hapus" className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-gagal">
                         <Trash2 size={15} />
                       </button>
                     </div>
@@ -165,13 +165,13 @@ export default function HistoryPage() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4 text-sm">
-          <span className="text-gray-500">Total: {total} job</span>
+          <span className="text-ampas">Total: {total} job</span>
           <div className="flex gap-1">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={clsx('h-8 w-8 rounded-lg text-xs font-medium', p === page ? 'bg-primary-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50')}
+                className={clsx('h-8 w-8 rounded-lg text-xs font-medium', p === page ? 'bg-primary-600 text-white' : 'bg-white border text-ampas hover:bg-serat')}
               >
                 {p}
               </button>
@@ -185,8 +185,8 @@ export default function HistoryPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-lg text-gray-900">Detail Job</h2>
-              <button onClick={() => setDetail(null)} className="p-1 rounded hover:bg-gray-100">
+              <h2 className="font-bold text-lg text-arang">Detail Job</h2>
+              <button onClick={() => setDetail(null)} className="p-1 rounded hover:bg-kayu/30">
                 <X size={18} />
               </button>
             </div>
@@ -207,57 +207,57 @@ export default function HistoryPage() {
                     ['Dibuat', new Date(detail.created_at).toLocaleString('id-ID')],
                     ['Selesai', detail.completed_at ? new Date(detail.completed_at).toLocaleString('id-ID') : '—'],
                   ].map(([k, v]) => (
-                    <div key={String(k)} className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-xs text-gray-400">{k}</p>
-                      <p className="font-medium text-gray-900 truncate capitalize">{String(v)}</p>
+                    <div key={String(k)} className="bg-serat rounded-lg p-3">
+                      <p className="text-xs text-ampas/70">{k}</p>
+                      <p className="font-medium text-arang truncate capitalize">{String(v)}</p>
                     </div>
                   ))}
                 </div>
 
                 {detail.settings && (
                   <div>
-                    <p className="font-semibold text-gray-700 mb-2">Settings</p>
-                    <pre className="bg-gray-50 rounded-lg p-3 text-xs overflow-auto">{JSON.stringify(detail.settings, null, 2)}</pre>
+                    <p className="font-semibold text-ampas mb-2">Settings</p>
+                    <pre className="bg-serat rounded-lg p-3 text-xs overflow-auto">{JSON.stringify(detail.settings, null, 2)}</pre>
                   </div>
                 )}
 
                 {detail.ai_analysis && (
                   <div>
-                    <p className="font-semibold text-gray-700 mb-2">Hasil Analisis AI</p>
-                    <div className="bg-blue-50 rounded-lg p-3 text-xs">
+                    <p className="font-semibold text-ampas mb-2">Hasil Analisis AI</p>
+                    <div className="bg-status-proses rounded-lg p-3 text-xs">
                       <div className="grid grid-cols-2 gap-3">
                         {detail.ai_analysis.complexity && (
                           <div>
-                            <p className="text-[11px] text-gray-500">Complexity</p>
-                            <p className="font-medium text-gray-900 capitalize">{detail.ai_analysis.complexity}</p>
+                            <p className="text-[11px] text-ampas">Complexity</p>
+                            <p className="font-medium text-arang capitalize">{detail.ai_analysis.complexity}</p>
                           </div>
                         )}
                         {detail.ai_analysis.background && (
                           <div>
-                            <p className="text-[11px] text-gray-500">Background</p>
-                            <p className="font-medium text-gray-900 capitalize">{detail.ai_analysis.background}</p>
+                            <p className="text-[11px] text-ampas">Background</p>
+                            <p className="font-medium text-arang capitalize">{detail.ai_analysis.background}</p>
                           </div>
                         )}
                         {typeof detail.ai_analysis.has_text === 'boolean' && (
                           <div>
-                            <p className="text-[11px] text-gray-500">Has text</p>
-                            <p className="font-medium text-gray-900">{detail.ai_analysis.has_text ? 'Ya' : 'Tidak'}</p>
+                            <p className="text-[11px] text-ampas">Has text</p>
+                            <p className="font-medium text-arang">{detail.ai_analysis.has_text ? 'Ya' : 'Tidak'}</p>
                           </div>
                         )}
                         {detail.ai_analysis.recommended_method && (
                           <div>
-                            <p className="text-[11px] text-gray-500">Recommended method</p>
-                            <p className="font-medium text-gray-900 capitalize">{detail.ai_analysis.recommended_method}</p>
+                            <p className="text-[11px] text-ampas">Recommended method</p>
+                            <p className="font-medium text-arang capitalize">{detail.ai_analysis.recommended_method}</p>
                           </div>
                         )}
                       </div>
 
                       {detail.ai_analysis.recommended_formats && detail.ai_analysis.recommended_formats.length > 0 && (
                         <div className="mt-3">
-                          <p className="text-[11px] text-gray-500 mb-1">Recommended formats</p>
+                          <p className="text-[11px] text-ampas mb-1">Recommended formats</p>
                           <div className="flex gap-1 flex-wrap">
                             {detail.ai_analysis.recommended_formats.map((f) => (
-                              <span key={f} className="badge bg-indigo-100 text-indigo-700 uppercase">{f}</span>
+                              <span key={f} className="badge bg-kuningan text-kuningan uppercase">{f}</span>
                             ))}
                           </div>
                         </div>
@@ -265,14 +265,14 @@ export default function HistoryPage() {
 
                       {detail.ai_analysis.notes && (
                         <div className="mt-3">
-                          <p className="text-[11px] text-gray-500 mb-1">Notes</p>
-                          <p className="text-gray-800 leading-relaxed">{detail.ai_analysis.notes}</p>
+                          <p className="text-[11px] text-ampas mb-1">Notes</p>
+                          <p className="text-arang leading-relaxed">{detail.ai_analysis.notes}</p>
                         </div>
                       )}
 
                       {detail.ai_analysis.parse_error && detail.ai_analysis.raw_analysis && (
                         <div className="mt-3">
-                          <p className="text-[11px] text-gray-500 mb-1">Raw AI output (parse error)</p>
+                          <p className="text-[11px] text-ampas mb-1">Raw AI output (parse error)</p>
                           <pre className="bg-white/60 rounded p-2 overflow-auto whitespace-pre-wrap">{detail.ai_analysis.raw_analysis}</pre>
                         </div>
                       )}
@@ -282,11 +282,11 @@ export default function HistoryPage() {
 
                 {detail.output_files && Object.keys(detail.output_files).length > 0 && (
                   <div>
-                    <p className="font-semibold text-gray-700 mb-2">File Output</p>
+                    <p className="font-semibold text-ampas mb-2">File Output</p>
                     <div className="space-y-2">
                       {Object.keys(detail.output_files).map((fmt) => (
-                        <div key={fmt} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-                          <span className="uppercase font-semibold text-gray-900">{fmt}</span>
+                        <div key={fmt} className="flex items-center justify-between bg-serat rounded-lg px-3 py-2">
+                          <span className="uppercase font-semibold text-arang">{fmt}</span>
                           <button onClick={() => downloadFile(detail.id, fmt)} className="text-primary-600 hover:underline font-medium flex items-center gap-1">
                             <Download size={13} /> Download
                           </button>

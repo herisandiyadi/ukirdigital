@@ -44,20 +44,20 @@ export default function AdminsPage() {
 
   return (
     <div className="p-6 max-w-4xl">
-      <h1 className="text-xl font-semibold text-gray-900 mb-1">Kelola Admin</h1>
-      <p className="text-sm text-gray-500 mb-6">
+      <h1 className="text-xl font-semibold text-arang mb-1">Kelola Admin</h1>
+      <p className="text-sm text-ampas mb-6">
         Hanya superadmin yang bisa menaikkan atau menurunkan admin. Superadmin lain tidak bisa diubah.
       </p>
 
-      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+      {error && <p className="mb-4 text-sm text-status-gagal">{error}</p>}
 
       {isLoading ? (
-        <p className="text-sm text-gray-500">Memuat…</p>
+        <p className="text-sm text-ampas">Memuat…</p>
       ) : (
         <div className="card overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-500">
+              <tr className="text-left text-ampas">
                 <th className="py-2 pr-4">Username</th>
                 <th className="py-2 pr-4">Email</th>
                 <th className="py-2 pr-4">Role</th>
@@ -69,15 +69,15 @@ export default function AdminsPage() {
                 const isSelf = a.id === me?.id
                 const isSuper = a.role === 'superadmin'
                 return (
-                  <tr key={a.id} className="border-t border-gray-100">
+                  <tr key={a.id} className="border-t border-kayu">
                     <td className="py-2 pr-4">{a.username}{isSelf && ' (Anda)'}</td>
                     <td className="py-2 pr-4">{a.email}</td>
                     <td className="py-2 pr-4">
-                      <span className={`badge ${isSuper ? 'badge-red' : 'badge-indigo'}`}>{a.role}</span>
+                      <span className={`badge ${isSuper ? 'badge-gagal' : 'badge-aksen'}`}>{a.role}</span>
                     </td>
                     <td className="py-2 pr-4">
                       {isSuper || isSelf ? (
-                        <span className="text-xs text-gray-400">—</span>
+                        <span className="text-xs text-ampas/70">—</span>
                       ) : (
                         <button
                           className="btn-secondary text-xs"
@@ -92,7 +92,7 @@ export default function AdminsPage() {
                 )
               })}
               {admins.length === 0 && (
-                <tr><td colSpan={4} className="py-4 text-center text-gray-400">Belum ada admin.</td></tr>
+                <tr><td colSpan={4} className="py-4 text-center text-ampas/70">Belum ada admin.</td></tr>
               )}
             </tbody>
           </table>

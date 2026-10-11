@@ -57,14 +57,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-kuningan p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-600 mb-4">
             <span className="text-white font-bold text-2xl">P</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Buat Akun Baru</h1>
-          <p className="text-gray-500 mt-1 text-sm">Gratis — 10 konversi/hari</p>
+          <h1 className="text-2xl font-bold text-arang">Buat Akun Baru</h1>
+          <p className="text-ampas mt-1 text-sm">Gratis — 10 konversi/hari</p>
         </div>
 
         <div className="card">
@@ -80,7 +80,7 @@ export default function RegisterPage() {
                 className="input"
                 placeholder="username_anda"
               />
-              {errors.username && <p className="text-xs text-red-500 mt-1">{errors.username.message}</p>}
+              {errors.username && <p className="text-xs text-status-gagal mt-1">{errors.username.message}</p>}
             </div>
             <div>
               <label className="label">Email</label>
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                 className="input"
                 placeholder="email@contoh.com"
               />
-              {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
+              {errors.email && <p className="text-xs text-status-gagal mt-1">{errors.email.message}</p>}
             </div>
             <div>
               <label className="label">Password</label>
@@ -100,7 +100,7 @@ export default function RegisterPage() {
                 className="input"
                 placeholder="Min. 8 karakter"
               />
-              {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
+              {errors.password && <p className="text-xs text-status-gagal mt-1">{errors.password.message}</p>}
             </div>
             <PhoneInput
               value={phoneValue}
@@ -111,7 +111,7 @@ export default function RegisterPage() {
               {loading ? 'Mendaftar...' : 'Daftar Sekarang'}
             </button>
           </form>
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-ampas">
             Sudah punya akun?{' '}
             <Link to="/login" className="text-primary-600 font-medium hover:underline">Masuk</Link>
           </p>

@@ -94,7 +94,7 @@ export default function UsersPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Manajemen User</h1>
+        <h1 className="text-2xl font-bold text-arang">Manajemen User</h1>
         <div className="flex gap-2">
           <button onClick={handleExport} className="btn-secondary gap-1"><Download size={15} />Export CSV</button>
           <button onClick={() => setShowCreate(true)} className="btn-primary gap-1"><Plus size={15} />Tambah User</button>
@@ -104,7 +104,7 @@ export default function UsersPage() {
       {/* Toolbar */}
       <div className="card mb-6 flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-48">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ampas/70" />
           <input className="input pl-9" placeholder="Cari nama/email/username..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} />
         </div>
         <select value={filter} onChange={(e) => { setFilter(e.target.value); setPage(1) }} className="input w-40">
@@ -117,50 +117,50 @@ export default function UsersPage() {
       {/* Table */}
       <div className="card overflow-hidden p-0">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-serat border-b">
             <tr>
               {['User', 'Username', 'Role', 'Status', 'Konversi/Bulan', 'Terakhir Login', 'Aksi'].map((h) => (
-                <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">{h}</th>
+                <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ampas uppercase">{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-kayu">
             {loading ? (
-              <tr><td colSpan={7} className="text-center py-12 text-gray-400">Memuat...</td></tr>
+              <tr><td colSpan={7} className="text-center py-12 text-ampas/70">Memuat...</td></tr>
             ) : users.map((u) => (
-              <tr key={u.id} className="hover:bg-gray-50">
+              <tr key={u.id} className="hover:bg-serat">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-semibold text-sm flex-shrink-0">
                       {u.username[0].toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{u.full_name || u.username}</p>
-                      <p className="text-xs text-gray-400 truncate">{u.email}</p>
+                      <p className="font-medium text-arang truncate">{u.full_name || u.username}</p>
+                      <p className="text-xs text-ampas/70 truncate">{u.email}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-gray-700">{u.username}</td>
+                <td className="px-4 py-3 text-ampas">{u.username}</td>
                 <td className="px-4 py-3">
-                  <span className={clsx('badge', u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700')}>
+                  <span className={clsx('badge', u.role === 'admin' ? 'bg-kuningan text-kuningan' : 'bg-kayu/30 text-ampas')}>
                     {u.role}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={clsx('badge', u.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
+                  <span className={clsx('badge', u.is_active ? 'bg-status-sukses text-status-sukses' : 'bg-status-gagal text-status-gagal')}>
                     {u.is_active ? (u.is_verified ? 'Aktif' : 'Belum Verifikasi') : 'Nonaktif'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-500">—</td>
-                <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                <td className="px-4 py-3 text-ampas">—</td>
+                <td className="px-4 py-3 text-ampas text-xs whitespace-nowrap">
                   {u.last_login ? new Date(u.last_login).toLocaleDateString('id-ID') : '—'}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1">
-                    <button onClick={() => { setEditUser(u); setEditForm({ full_name: u.full_name || '', username: u.username, email: u.email, role: u.role, is_active: u.is_active }) }} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-blue-600" title="Edit"><Edit2 size={14} /></button>
-                    <button onClick={() => { setLimitUser(u); setLimitForm(u.limits ?? {}); setLimitTab('limit') }} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-indigo-600" title="Atur Limit"><Sliders size={14} /></button>
-                    <button onClick={() => handleSuspend(u)} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-orange-600" title="Suspend"><UserX size={14} /></button>
-                    <button onClick={() => handleDelete(u)} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-red-600" title="Hapus"><Trash2 size={14} /></button>
+                    <button onClick={() => { setEditUser(u); setEditForm({ full_name: u.full_name || '', username: u.username, email: u.email, role: u.role, is_active: u.is_active }) }} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-proses" title="Edit"><Edit2 size={14} /></button>
+                    <button onClick={() => { setLimitUser(u); setLimitForm(u.limits ?? {}); setLimitTab('limit') }} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-kuningan" title="Atur Limit"><Sliders size={14} /></button>
+                    <button onClick={() => handleSuspend(u)} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-kuningan" title="Suspend"><UserX size={14} /></button>
+                    <button onClick={() => handleDelete(u)} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-gagal" title="Hapus"><Trash2 size={14} /></button>
                   </div>
                 </td>
               </tr>
@@ -172,10 +172,10 @@ export default function UsersPage() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4 text-sm">
-          <span className="text-gray-500">Total: {total} user</span>
+          <span className="text-ampas">Total: {total} user</span>
           <div className="flex gap-1">
             {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((p) => (
-              <button key={p} onClick={() => setPage(p)} className={clsx('h-8 w-8 rounded-lg text-xs font-medium', p === page ? 'bg-primary-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50')}>{p}</button>
+              <button key={p} onClick={() => setPage(p)} className={clsx('h-8 w-8 rounded-lg text-xs font-medium', p === page ? 'bg-primary-600 text-white' : 'bg-white border text-ampas hover:bg-serat')}>{p}</button>
             ))}
           </div>
         </div>
@@ -213,7 +213,7 @@ export default function UsersPage() {
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="is_active" checked={!!editForm.is_active} onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })} />
-              <label htmlFor="is_active" className="text-sm text-gray-700">Akun Aktif</label>
+              <label htmlFor="is_active" className="text-sm text-ampas">Akun Aktif</label>
             </div>
             <div className="flex gap-3 pt-2">
               <button onClick={handleEditSave} className="btn-primary flex-1">Simpan</button>
@@ -235,7 +235,7 @@ export default function UsersPage() {
             {/* Tabs */}
             <div className="flex border-b mb-4">
               {(['limit','feature'] as const).map((t) => (
-                <button key={t} onClick={() => setLimitTab(t)} className={clsx('px-4 py-2 text-sm font-medium border-b-2 -mb-px', limitTab === t ? 'border-primary-600 text-primary-700' : 'border-transparent text-gray-500 hover:text-gray-700')}>
+                <button key={t} onClick={() => setLimitTab(t)} className={clsx('px-4 py-2 text-sm font-medium border-b-2 -mb-px', limitTab === t ? 'border-primary-600 text-primary-700' : 'border-transparent text-ampas hover:text-ampas')}>
                   {t === 'limit' ? 'Limit Konversi' : 'Format & Fitur'}
                 </button>
               ))}
@@ -295,7 +295,7 @@ export default function UsersPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <input type="checkbox" id="ai_toggle" checked={!!limitForm.use_ai_analysis} onChange={(e) => setLimitForm({ ...limitForm, use_ai_analysis: e.target.checked })} />
-                  <label htmlFor="ai_toggle" className="text-sm text-gray-700">Akses Analisis AI (Claude)</label>
+                  <label htmlFor="ai_toggle" className="text-sm text-ampas">Akses Analisis AI (Claude)</label>
                 </div>
               </div>
             )}

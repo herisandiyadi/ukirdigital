@@ -52,16 +52,16 @@ function StepsIndicator({ current }: { current: number }) {
               'h-8 w-8 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-colors',
               i < current  ? 'bg-primary-600 border-primary-600 text-white'
               : i === current ? 'border-primary-600 text-primary-600 bg-white'
-              : 'border-gray-300 text-gray-400 bg-white'
+              : 'border-kayu text-ampas/70 bg-white'
             )}>
               {i < current ? <CheckCircle2 size={16} /> : i + 1}
             </div>
-            <span className={clsx('text-xs mt-1 whitespace-nowrap', i === current ? 'text-primary-700 font-medium' : 'text-gray-400')}>
+            <span className={clsx('text-xs mt-1 whitespace-nowrap', i === current ? 'text-primary-700 font-medium' : 'text-ampas/70')}>
               {label}
             </span>
           </div>
           {i < STEPS.length - 1 && (
-            <div className={clsx('flex-1 h-0.5 mx-2 mb-5', i < current ? 'bg-primary-600' : 'bg-gray-200')} />
+            <div className={clsx('flex-1 h-0.5 mx-2 mb-5', i < current ? 'bg-primary-600' : 'bg-kayu/50')} />
           )}
         </div>
       ))}
@@ -229,14 +229,14 @@ export default function ConvertPage() {
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Konversi Gambar ke 3D</h1>
+      <h1 className="text-2xl font-bold text-arang mb-6">Konversi Gambar ke 3D</h1>
       <StepsIndicator current={step} />
 
       {/* ── STEP 0: Upload ── */}
       {step === 0 && (
         <div className="card">
           {limits?.daily_limit_hit && (
-            <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+            <div className="mb-4 rounded-lg bg-status-gagal border border-status-gagal p-4 text-sm text-status-gagal">
               ⚠️ Kuota konversi harian Anda sudah habis ({limits.used_today}/{limits.max_per_day}). Coba lagi besok.
             </div>
           )}
@@ -244,26 +244,26 @@ export default function ConvertPage() {
             {...getRootProps()}
             className={clsx(
               'border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors',
-              isDragActive ? 'border-primary-500 bg-primary-50' : 'border-gray-300 hover:border-primary-400 hover:bg-gray-50'
+              isDragActive ? 'border-primary-500 bg-primary-50' : 'border-kayu hover:border-primary-400 hover:bg-serat'
             )}
           >
             <input {...getInputProps()} />
-            <Upload size={40} className="mx-auto text-gray-400 mb-3" />
-            <p className="text-gray-700 font-medium">
+            <Upload size={40} className="mx-auto text-ampas/70 mb-3" />
+            <p className="text-ampas font-medium">
               {isDragActive ? 'Lepaskan file di sini...' : 'Drag & drop gambar, atau klik untuk memilih'}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-ampas/70 mt-1">
               PNG, JPG, WEBP — Maks {limits?.max_file_size_mb ?? 10} MB
             </p>
           </div>
 
           {file && preview && (
-            <div className="mt-6 flex items-start gap-6 p-4 bg-gray-50 rounded-xl">
+            <div className="mt-6 flex items-start gap-6 p-4 bg-serat rounded-xl">
               <img src={preview} alt="preview" className="h-24 w-24 rounded-lg object-contain bg-white border" />
               <div className="space-y-1 text-sm">
-                <p className="font-medium text-gray-900">{file.name}</p>
-                <p className="text-gray-500">Ukuran: {fmtBytes(file.size)}</p>
-                {imgDims && <p className="text-gray-500">Dimensi: {imgDims.w} × {imgDims.h} px</p>}
+                <p className="font-medium text-arang">{file.name}</p>
+                <p className="text-ampas">Ukuran: {fmtBytes(file.size)}</p>
+                {imgDims && <p className="text-ampas">Dimensi: {imgDims.w} × {imgDims.h} px</p>}
               </div>
             </div>
           )}
@@ -285,18 +285,18 @@ export default function ConvertPage() {
         <div className="card">
           <div className="flex items-center gap-3 mb-6">
             <Cpu size={22} className="text-primary-600" />
-            <h2 className="font-semibold text-gray-900 text-lg">Analisis AI</h2>
+            <h2 className="font-semibold text-arang text-lg">Analisis AI</h2>
           </div>
 
           {analyzing ? (
             <div className="flex flex-col items-center py-12 gap-4">
               <div className="h-12 w-12 rounded-full border-4 border-primary-200 border-t-primary-600 animate-spin" />
-              <p className="text-gray-600">AI sedang menganalisis gambar...</p>
+              <p className="text-ampas">AI sedang menganalisis gambar...</p>
             </div>
           ) : aiResult ? (
             <div className="space-y-4">
               {aiResult.parse_error ? (
-                <pre className="text-xs bg-gray-50 p-3 rounded overflow-auto">{aiResult.raw_analysis}</pre>
+                <pre className="text-xs bg-serat p-3 rounded overflow-auto">{aiResult.raw_analysis}</pre>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
                   {[
@@ -307,15 +307,15 @@ export default function ConvertPage() {
                     ['Tinggi Relief (mm)', aiResult.suggested_max_height_mm],
                     ['Format Rekomendasi', (aiResult.recommended_formats ?? []).join(', ')],
                   ].map(([k, v]) => v != null && (
-                    <div key={String(k)} className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-xs text-gray-500">{k}</p>
-                      <p className="text-sm font-semibold text-gray-900 capitalize">{String(v)}</p>
+                    <div key={String(k)} className="bg-serat rounded-lg p-3">
+                      <p className="text-xs text-ampas">{k}</p>
+                      <p className="text-sm font-semibold text-arang capitalize">{String(v)}</p>
                     </div>
                   ))}
                 </div>
               )}
               {aiResult.notes && (
-                <div className="bg-blue-50 rounded-lg p-3 text-sm text-blue-800">
+                <div className="bg-status-proses rounded-lg p-3 text-sm text-status-proses">
                   <strong>Catatan:</strong> {aiResult.notes}
                 </div>
               )}
@@ -329,7 +329,7 @@ export default function ConvertPage() {
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-ampas">
               <p>Analisis AI tidak tersedia.</p>
               <button onClick={() => setStep(2)} className="btn-primary mt-4">Lanjutkan Manual</button>
             </div>
@@ -349,7 +349,7 @@ export default function ConvertPage() {
           <div className="card space-y-5">
             <div className="flex items-center gap-2 mb-2">
               <Settings2 size={20} className="text-primary-600" />
-              <h2 className="font-semibold text-gray-900">Pengaturan Konversi</h2>
+              <h2 className="font-semibold text-arang">Pengaturan Konversi</h2>
             </div>
 
             {/* Method */}
@@ -372,8 +372,8 @@ export default function ConvertPage() {
                       className="mt-0.5"
                     />
                     <div>
-                      <span className="text-sm font-medium text-gray-900">{label}</span>
-                      <span className="text-xs text-gray-400 ml-2">{desc}</span>
+                      <span className="text-sm font-medium text-arang">{label}</span>
+                      <span className="text-xs text-ampas/70 ml-2">{desc}</span>
                     </div>
                   </label>
                 ))}
@@ -425,7 +425,7 @@ export default function ConvertPage() {
                   onChange={(e) => setSmoothingBlur(+e.target.value)}
                   className="w-full"
                 />
-                <p className="text-xs text-gray-600 mt-2">
+                <p className="text-xs text-ampas mt-2">
                   Nilai lebih besar = lebih halus (tapi detail bisa berkurang). Rekomendasi: 0.8–1.5 untuk ornamen.
                 </p>
               </div>
@@ -468,15 +468,15 @@ export default function ConvertPage() {
                         className="mt-0.5"
                       />
                       <div>
-                        <span className="text-sm font-medium text-gray-900">{label}</span>
-                        <span className="text-xs text-gray-400 ml-2">{desc}</span>
+                        <span className="text-sm font-medium text-arang">{label}</span>
+                        <span className="text-xs text-ampas/70 ml-2">{desc}</span>
                       </div>
                     </label>
                   ))}
                 </div>
 
                 {outlineType !== 'none' && (
-                  <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                  <div className="bg-status-proses rounded-lg p-3 border border-status-proses">
                     <label className="label text-sm">
                       Ketebalan Outline: <span className="font-bold text-primary-600">{outlineThickness}mm</span>
                     </label>
@@ -489,7 +489,7 @@ export default function ConvertPage() {
                       onChange={(e) => setOutlineThickness(+e.target.value)}
                       className="w-full"
                     />
-                    <p className="text-xs text-gray-600 mt-2">
+                    <p className="text-xs text-ampas mt-2">
                       Outline diterapkan ke semua format output (STL, SVG, DXF)
                     </p>
                   </div>
@@ -501,7 +501,7 @@ export default function ConvertPage() {
             <div className="border-t pt-4">
               <label className="label">
                 CNC Ball Radius (Opsional)
-                <span className="text-xs text-gray-400 ml-2">Untuk perhitungan stepover</span>
+                <span className="text-xs text-ampas/70 ml-2">Untuk perhitungan stepover</span>
               </label>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -515,17 +515,17 @@ export default function ConvertPage() {
                     placeholder="Contoh: 1.5mm"
                     className="input flex-1"
                   />
-                  <span className="text-sm font-medium text-gray-600">mm</span>
+                  <span className="text-sm font-medium text-ampas">mm</span>
                 </div>
                 {ballRadius !== undefined && (
-                  <div className="bg-amber-50 rounded-lg p-3 border border-amber-200">
-                    <p className="text-xs text-gray-700">
+                  <div className="bg-kuningan rounded-lg p-3 border border-kuningan">
+                    <p className="text-xs text-ampas">
                       <span className="font-semibold">Ball Radius:</span> {ballRadius.toFixed(2)} mm
                     </p>
-                    <p className="text-xs text-gray-700 mt-1">
+                    <p className="text-xs text-ampas mt-1">
                       <span className="font-semibold">Stepover (10%):</span> {(ballRadius * 0.1).toFixed(3)} mm
                     </p>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-ampas mt-2">
                       Nilai stepover akan ditambahkan ke metadata DXF untuk referensi CNC machining.
                     </p>
                   </div>
@@ -546,23 +546,23 @@ export default function ConvertPage() {
           {/* Status */}
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-gray-900 text-lg">
+              <h2 className="font-semibold text-arang text-lg">
                 {job.status === 'completed' ? '✅ Konversi Selesai' : job.status === 'failed' ? '❌ Konversi Gagal' : '⏳ Memproses...'}
               </h2>
-              <p className="text-sm text-gray-500 mt-0.5">{job.original_filename}</p>
+              <p className="text-sm text-ampas mt-0.5">{job.original_filename}</p>
             </div>
             <StatusBadge status={job.status} />
           </div>
 
           {/* Progress bar for processing */}
           {(job.status === 'pending' || job.status === 'processing') && (
-            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-kayu/30 rounded-full overflow-hidden">
               <div className="h-2 bg-primary-500 rounded-full animate-pulse" style={{ width: '60%' }} />
             </div>
           )}
 
           {job.status === 'failed' && (
-            <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+            <div className="rounded-lg bg-status-gagal border border-status-gagal p-4 text-sm text-status-gagal">
               {job.error_message || 'Terjadi kesalahan saat konversi.'}
             </div>
           )}
@@ -573,8 +573,8 @@ export default function ConvertPage() {
               {/* STL 3D preview */}
               {stlBlobUrl && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Preview 3D (STL)</h3>
-                  <div className="h-64 rounded-xl overflow-hidden bg-gray-900">
+                  <h3 className="text-sm font-semibold text-ampas mb-2">Preview 3D (STL)</h3>
+                  <div className="h-64 rounded-xl overflow-hidden bg-arang">
                     <Canvas camera={{ position: [0, 0, 50], fov: 50 }}>
                       <ambientLight intensity={0.6} />
                       <directionalLight position={[10, 10, 8]} intensity={0.9} />
@@ -589,7 +589,7 @@ export default function ConvertPage() {
               {/* SVG preview */}
               {svgBlobUrl && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Preview SVG</h3>
+                  <h3 className="text-sm font-semibold text-ampas mb-2">Preview SVG</h3>
                   <div className="border rounded-xl p-4 bg-white max-h-48 overflow-auto">
                     <img src={svgBlobUrl} alt="SVG preview" className="max-h-40 mx-auto" />
                   </div>
@@ -598,18 +598,18 @@ export default function ConvertPage() {
 
               {/* File table */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">File Output</h3>
+                <h3 className="text-sm font-semibold text-ampas mb-2">File Output</h3>
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-2 font-medium text-gray-500">Format</th>
-                      <th className="text-right py-2 font-medium text-gray-500">Aksi</th>
+                      <th className="text-left py-2 font-medium text-ampas">Format</th>
+                      <th className="text-right py-2 font-medium text-ampas">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     {Object.keys(job.output_files).map((fmt) => (
                       <tr key={fmt} className="border-b last:border-0">
-                        <td className="py-2 uppercase font-semibold text-gray-900">{fmt}</td>
+                        <td className="py-2 uppercase font-semibold text-arang">{fmt}</td>
                         <td className="py-2 text-right">
                           <button
                             onClick={() => downloadFile(job.id, fmt)}
@@ -640,7 +640,7 @@ export default function ConvertPage() {
           )}
 
           {job.processing_time_seconds != null && (
-            <p className="text-xs text-gray-400">Waktu proses: {job.processing_time_seconds}s</p>
+            <p className="text-xs text-ampas/70">Waktu proses: {job.processing_time_seconds}s</p>
           )}
         </div>
       )}

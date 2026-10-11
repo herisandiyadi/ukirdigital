@@ -41,19 +41,19 @@ export default function VerifyEmailPage() {
   }, [token, navigate])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-kuningan p-4">
       <div className="w-full max-w-md">
         <div className="card text-center">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 mb-6">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-kuningan mb-6">
             <span className="text-4xl">{state === 'ok' ? '✅' : state === 'error' ? '⚠️' : '⏳'}</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-arang mb-2">
             {state === 'ok' ? 'Verifikasi Berhasil' : state === 'error' ? 'Verifikasi Gagal' : 'Memverifikasi...'}
           </h2>
-          <p className="text-gray-600 mb-6">{state === 'loading' ? 'Mohon tunggu sebentar.' : message}</p>
+          <p className="text-ampas mb-6">{state === 'loading' ? 'Mohon tunggu sebentar.' : message}</p>
 
           {state === 'ok' && (
-            <p className="text-sm text-gray-500">Mengalihkan ke halaman masuk...</p>
+            <p className="text-sm text-ampas">Mengalihkan ke halaman masuk...</p>
           )}
           {state === 'error' && (
             <Link to="/login" className="btn-primary inline-block w-full py-2.5">

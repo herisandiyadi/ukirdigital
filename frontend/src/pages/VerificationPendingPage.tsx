@@ -28,32 +28,32 @@ export default function VerificationPendingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-kuningan p-4">
       <div className="w-full max-w-md">
         <div className="card text-center">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mb-6">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-status-sukses mb-6">
             <span className="text-4xl">💬</span>
           </div>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Verifikasi WhatsApp</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-arang mb-2">Verifikasi WhatsApp</h2>
+          <p className="text-ampas mb-6">
             Kami telah mengirim link verifikasi ke WhatsApp Anda.
           </p>
 
           {phoneNumber && (
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
-              <p className="text-sm text-gray-700">
+            <div className="bg-status-proses border border-status-proses p-4 rounded-lg mb-6">
+              <p className="text-sm text-ampas">
                 <strong>Nomor terdaftar:</strong> <br />
                 {phoneNumber}
               </p>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-ampas mt-2">
                 ✓ Link verifikasi berlaku 24 jam
               </p>
             </div>
           )}
 
           <div className="space-y-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-ampas">
               Belum menerima pesan?{' '}
               <button
                 onClick={handleResendCode}
@@ -71,7 +71,7 @@ export default function VerificationPendingPage() {
               Lanjut ke Login
             </button>
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-ampas">
               Butuh bantuan? Hubungi support kami
             </p>
           </div>
