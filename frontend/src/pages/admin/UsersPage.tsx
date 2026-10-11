@@ -146,12 +146,12 @@ export default function UsersPage() {
                 </td>
                 <td className="px-4 py-3 text-ampas">{u.username}</td>
                 <td className="px-4 py-3">
-                  <span className={clsx('badge', u.role === 'admin' ? 'bg-kuningan text-kuningan' : 'bg-kayu/30 text-ampas')}>
+                  <span className={clsx('badge', u.role === 'superadmin' ? 'badge-gagal' : u.role === 'admin' ? 'badge-aksen' : 'badge-netral')}>
                     {u.role}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={clsx('badge', u.is_active ? 'bg-status-sukses text-status-sukses' : 'bg-status-gagal text-status-gagal')}>
+                  <span className={clsx('badge', !u.is_active ? 'badge-gagal' : u.is_verified ? 'badge-sukses' : 'badge-proses')}>
                     {u.is_active ? (u.is_verified ? 'Aktif' : 'Belum Verifikasi') : 'Nonaktif'}
                   </span>
                 </td>

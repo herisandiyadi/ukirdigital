@@ -130,7 +130,7 @@ export default function HistoryPage() {
                     <div className="flex gap-1 flex-wrap">
                       {job.output_files
                         ? Object.keys(job.output_files).map((f) => (
-                            <span key={f} className="badge bg-kuningan text-kuningan uppercase">{f}</span>
+                            <span key={f} className="badge badge-aksen uppercase">{f}</span>
                           ))
                         : <span className="text-ampas/70">—</span>
                       }
@@ -259,7 +259,7 @@ export default function HistoryPage() {
                           <p className="text-[11px] text-ampas mb-1">Recommended formats</p>
                           <div className="flex gap-1 flex-wrap">
                             {detail.ai_analysis.recommended_formats.map((f) => (
-                              <span key={f} className="badge bg-kuningan text-kuningan uppercase">{f}</span>
+                              <span key={f} className="badge badge-aksen uppercase">{f}</span>
                             ))}
                           </div>
                         </div>
