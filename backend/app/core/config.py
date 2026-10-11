@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     # File storage
     UPLOAD_DIR: str = "uploads"
     OUTPUT_DIR: str = "outputs"
-    MAX_FILE_SIZE_MB: int = 10
+    MAX_FILE_SIZE_MB: int = 30
 
     # Allowed formats
     ALLOWED_OUTPUT_FORMATS: List[str] = ["stl", "svg", "dxf"]

@@ -21,7 +21,7 @@ class UserLimit(Base):
 
     max_conversions_per_day = Column(Integer, default=10, nullable=False)
     max_conversions_per_month = Column(Integer, default=100, nullable=False)
-    max_file_size_mb = Column(Integer, default=10, nullable=False)
+    max_file_size_mb = Column(Integer, default=30, nullable=False)
     max_output_formats = Column(Integer, default=3, nullable=False)
     # e.g. ["stl", "svg", "dxf"]
     allowed_formats = Column(JSON, default=lambda: ["stl", "svg", "dxf"], nullable=False)
