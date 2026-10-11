@@ -107,7 +107,7 @@ export default function DefaultLimitsPage() {
       {/* Section 1 */}
       <div className="card space-y-4">
         <h2 className="font-semibold text-arang">Default Limit User Baru</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
            {[
             [['default_user_limits','max_conversions_per_day'],'Max Konversi/Hari'],
             [['default_user_limits','max_conversions_per_month'],'Max Konversi/Bulan'],
@@ -152,7 +152,8 @@ export default function DefaultLimitsPage() {
             <Plus size={13} /> Tambah Paket
           </button>
         </div>
-        <table className="w-full text-sm">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full text-sm">
           <thead className="border-b">
             <tr>
               {['Nama','Konversi/Hari','Konversi/Bulan','Max MB','Format','AI','Aksi'].map((h) => (
@@ -180,12 +181,13 @@ export default function DefaultLimitsPage() {
             {presets.length === 0 && <tr><td colSpan={7} className="text-center py-6 text-ampas/70">Belum ada preset.</td></tr>}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Section 3: Conversion defaults */}
       <div className="card space-y-4">
         <h2 className="font-semibold text-arang">Setting Konversi Default</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label">Metode Default</label>
             <select className="input" value={cs.default_method ?? 'relief'} onChange={(e) => setDef(['conversion_settings','default_method'], e.target.value)}>
@@ -213,7 +215,7 @@ export default function DefaultLimitsPage() {
       {/* Section 4: AI */}
       <div className="card space-y-4">
         <h2 className="font-semibold text-arang">AI Settings</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label">Provider</label>
             <select

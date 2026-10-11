@@ -298,7 +298,7 @@ export default function ConvertPage() {
               {aiResult.parse_error ? (
                 <pre className="text-xs bg-serat p-3 rounded overflow-auto">{aiResult.raw_analysis}</pre>
               ) : (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     ['Kompleksitas', aiResult.complexity],
                     ['Background', aiResult.background],
@@ -387,7 +387,7 @@ export default function ConvertPage() {
             </div>
 
             {/* Numbers */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="label">Tinggi Relief (mm)</label>
                 <input type="number" min={1} max={20} step={0.5} value={maxHeight} onChange={(e) => setMaxHeight(+e.target.value)} className="input" />
@@ -599,7 +599,8 @@ export default function ConvertPage() {
               {/* File table */}
               <div>
                 <h3 className="text-sm font-semibold text-ampas mb-2">File Output</h3>
-                <table className="w-full text-sm">
+                <div className="w-full overflow-x-auto">
+                  <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
                       <th className="text-left py-2 font-medium text-ampas">Format</th>
@@ -623,6 +624,7 @@ export default function ConvertPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
 
               <div className="flex gap-3">

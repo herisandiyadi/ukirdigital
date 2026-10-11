@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard icon={Users}       label="Total Users"        value={overview?.total_users ?? '—'} />
         <StatCard icon={Users}       label="Active Users"       value={overview?.active_users ?? '—'} />
         <StatCard icon={Zap}         label="Jobs Today"         value={overview?.jobs_today ?? '—'} />
