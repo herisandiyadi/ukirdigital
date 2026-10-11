@@ -8,7 +8,7 @@ DEFAULT_SYSTEM_SETTINGS: dict[str, Any] = {
     "default_user_limits": {
         "max_conversions_per_day": 10,
         "max_conversions_per_month": 100,
-        "max_file_size_mb": 10,
+        "max_file_size_mb": 30,
         "max_output_formats": 3,
         "allowed_formats": ["stl", "svg", "dxf"],
         "use_ai_analysis": True,
@@ -34,7 +34,7 @@ DEFAULT_SYSTEM_SETTINGS: dict[str, Any] = {
         "max_storage_per_user_mb": 500,
         "auto_delete_after_days": 7,
         "allowed_input_types": ["image/png", "image/jpeg", "image/webp"],
-        "max_upload_file_mb": 10,  # hard upload limit; can be raised via Admin
+        "max_upload_file_mb": 30,  # hard upload limit; can be raised via Admin
     },
     "ai": {
         "enabled": True,

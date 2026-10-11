@@ -295,6 +295,12 @@ export default function ConvertPage() {
             </div>
           ) : aiResult ? (
             <div className="space-y-4">
+              {/* Preview gambar input (BUG-PRV01): tampil di samping hasil AI */}
+              {preview && (
+                <div className="flex items-center justify-center rounded-xl bg-white border border-kayu p-3">
+                  <img src={preview} alt="Gambar yang dianalisis AI" className="max-h-64 w-auto rounded-lg object-contain" />
+                </div>
+              )}
               {aiResult.parse_error ? (
                 <pre className="text-xs bg-serat p-3 rounded overflow-auto">{aiResult.raw_analysis}</pre>
               ) : (

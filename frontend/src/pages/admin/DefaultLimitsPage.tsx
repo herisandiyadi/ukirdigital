@@ -148,7 +148,7 @@ export default function DefaultLimitsPage() {
       <div className="card">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-arang">Preset Paket</h2>
-          <button onClick={() => { setEditPreset({ name:'', max_conversions_per_day:10, max_conversions_per_month:100, max_file_size_mb:10, allowed_formats:['stl'], use_ai_analysis:false }); setIsNewPreset(true) }} className="btn-secondary text-xs gap-1">
+          <button onClick={() => { setEditPreset({ name:'', max_conversions_per_day:10, max_conversions_per_month:100, max_file_size_mb:30, allowed_formats:['stl'], use_ai_analysis:false }); setIsNewPreset(true) }} className="btn-secondary text-xs gap-1">
             <Plus size={13} /> Tambah Paket
           </button>
         </div>
