@@ -26,6 +26,15 @@ export function RequireAdmin() {
   const ready = useAuthStore((s) => s.ready)
   if (!ready) return <FullPageSpinner />
   if (!user) return <Navigate to="/login" replace />
-  if (user.role !== 'admin') return <Navigate to="/dashboard" replace />
+  if (user.role !== 'admin' && user.role !== 'superadmin') return <Navigate to="/dashboard" replace />
+  return <AdminLayout><Outlet /></AdminLayout>
+}
+
+export function RequireSuperadmin() {
+  const user = useAuthStore((s) => s.user)
+  const ready = useAuthStore((s) => s.ready)
+  if (!ready) return <FullPageSpinner />
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'superadmin') return <Navigate to="/admin" replace />
   return <AdminLayout><Outlet /></AdminLayout>
 }

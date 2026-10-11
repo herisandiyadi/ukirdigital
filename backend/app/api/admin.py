@@ -12,7 +12,7 @@ from sqlalchemy import select, func, and_, desc, update, delete
 from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, require_admin, require_superadmin
 from app.core.defaults import DEFAULT_SYSTEM_SETTINGS
 from app.models.user import User, UserRole
 from app.models.user_limit import UserLimit
@@ -28,11 +28,8 @@ router = APIRouter()
 
 # ── Guards ────────────────────────────────────────────────────────────────────
 
-def require_admin(current_user: User = Depends(get_current_user)) -> User:
-    role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
-    if role_val != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin only")
-    return current_user
+# FEAT-SA01: guard admin & superadmin dari security.py (guard lokal lama hanya
+# menerima "admin" dan akan menolak superadmin).
 
 
 # ── Pydantic models (local, no circular imports) ──────────────────────────────
@@ -52,6 +49,24 @@ class AdminUserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+ADMIN_LIKE = ("admin", "superadmin")
+
+
+def _role_str(user: User) -> str:
+    return str(getattr(user.role, "value", user.role))
+
+
+def _guard_target(actor: User, target: User) -> None:
+    """FEAT-SA01: admin biasa tidak boleh menyentuh admin/superadmin lain.
+    Superadmin boleh mengubah admin, tapi tidak superadmin lain."""
+    if _role_str(target) not in ADMIN_LIKE:
+        return
+    if _role_str(actor) != "superadmin":
+        raise HTTPException(status_code=403, detail="Hanya superadmin yang boleh mengubah akun admin")
+    if _role_str(target) == "superadmin" and target.id != actor.id:
+        raise HTTPException(status_code=403, detail="Superadmin tidak boleh mengubah superadmin lain")
 
 
 class UpdateUserBody(BaseModel):
@@ -364,15 +379,18 @@ async def update_user(
     user_id: uuid.UUID,
     body: UpdateUserBody,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(require_admin),
+    actor: User = Depends(require_admin),
 ):
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    _guard_target(actor, user)
 
     update_data = body.model_dump(exclude_unset=True)
     if "role" in update_data:
+        if _role_str(actor) != "superadmin":
+            raise HTTPException(status_code=403, detail="Hanya superadmin yang boleh mengubah role")
         update_data["role"] = UserRole(update_data["role"])
     for k, v in update_data.items():
         setattr(user, k, v)
@@ -421,7 +439,9 @@ async def create_user_admin(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin),
 ):
-    """Admin only — create a new user."""
+    """Admin only — create a new user. Pembuatan akun admin/superadmin hanya oleh superadmin."""
+    if str(getattr(user.role, "value", user.role)) in ADMIN_LIKE and _role_str(admin) != "superadmin":
+        raise HTTPException(status_code=403, detail="Hanya superadmin yang boleh membuat akun admin")
     user_obj = await user_service.create(db, user)
     return user_obj
 
@@ -438,6 +458,7 @@ async def suspend_user(
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    _guard_target(admin, user)
     user.is_active = not user.is_active
     await db.commit()
     return {"id": str(user.id), "is_active": user.is_active}
@@ -455,6 +476,7 @@ async def delete_user(
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    _guard_target(admin, user)
     await db.delete(user)
     await db.commit()
 
@@ -591,7 +613,7 @@ async def get_defaults(
 async def update_defaults(
     body: dict,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(require_admin),
+    admin: User = Depends(require_superadmin),
 ):
     allowed_keys = {"default_user_limits", "conversion_settings", "storage", "ai"}
     for key in body:
@@ -616,7 +638,7 @@ async def list_presets(
 async def update_presets(
     presets: list[PresetPackage],
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(require_admin),
+    admin: User = Depends(require_superadmin),
 ):
     data = [p.model_dump() for p in presets]
     await _set_setting(db, PRESET_PACKAGES_KEY, data, admin.id)

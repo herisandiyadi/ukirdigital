@@ -54,7 +54,7 @@ export default function UserLayout({ children }: { children?: ReactNode }) {
             </NavLink>
           ))}
 
-          {user?.role === 'admin' && (
+          {(user?.role === 'admin' || user?.role === 'superadmin') && (
              <NavLink
                to="/admin"
                className={({ isActive }) =>

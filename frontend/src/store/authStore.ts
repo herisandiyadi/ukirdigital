@@ -18,6 +18,7 @@ interface AuthState {
   setReady: (ready: boolean) => void
   logout: () => void
   isAdmin: () => boolean
+  isSuperadmin: () => boolean
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -31,7 +32,8 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) => set({ user }),
       setReady: (ready) => set({ ready }),
       logout: () => set({ user: null, accessToken: null }),
-      isAdmin: () => get().user?.role === 'admin',
+      isAdmin: () => ['admin', 'superadmin'].includes(get().user?.role ?? ''),
+      isSuperadmin: () => get().user?.role === 'superadmin',
     }),
     {
       name: 'auth-storage',

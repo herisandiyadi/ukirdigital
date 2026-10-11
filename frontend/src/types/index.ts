@@ -1,5 +1,5 @@
 // ── User ───────────────────────────────────────────────────────────────────────
-export type UserRole = 'admin' | 'user'
+export type UserRole = 'superadmin' | 'admin' | 'user'
 
 export interface UserLimit {
   max_conversions_per_day: number

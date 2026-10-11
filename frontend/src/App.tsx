@@ -21,9 +21,10 @@ const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage')
 const UsersPage          = lazy(() => import('./pages/admin/UsersPage'))
 const DefaultLimitsPage  = lazy(() => import('./pages/admin/DefaultLimitsPage'))
 const ActivityLogsPage   = lazy(() => import('./pages/admin/ActivityLogsPage'))
+const AdminsPage         = lazy(() => import('./pages/admin/AdminsPage'))
 
 // Guards
-import { RequireAuth, RequireAdmin } from './components/RequireAuth'
+import { RequireAuth, RequireAdmin, RequireSuperadmin } from './components/RequireAuth'
 
 // ── Loading fallback ──────────────────────────────────────────────────────────
 function PageLoader() {
@@ -69,6 +70,11 @@ export default function App() {
             </Route>
 
             {/* ── Admin only ───────────────────────────────────────────── */}
+            {/* ── Superadmin only ──────────────────────────────────────── */}
+            <Route element={<RequireSuperadmin />}>
+              <Route path="/admin/admins" element={<AdminsPage />} />
+            </Route>
+
             <Route element={<RequireAdmin />}>
               <Route path="/admin"        element={<AdminDashboardPage />} />
               <Route path="/admin/users"  element={<UsersPage />} />
