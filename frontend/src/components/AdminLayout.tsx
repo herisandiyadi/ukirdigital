@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
+import { performLogout } from '@/services/logout'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 import {
@@ -17,7 +18,7 @@ const NAV = [
 ]
 
 export default function AdminLayout({ children }: { children?: ReactNode }) {
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
 
   return (
@@ -70,7 +71,7 @@ export default function AdminLayout({ children }: { children?: ReactNode }) {
             </div>
           </div>
             <button
-              onClick={() => { logout(); navigate('/login') }}
+              onClick={async () => { await performLogout(); navigate('/login') }}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-red-600 transition-colors"
             >
             <LogOut size={16} />

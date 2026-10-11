@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
+import { performLogout } from '@/services/logout'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 import {
@@ -14,11 +15,11 @@ const NAV = [
 ]
 
 export default function UserLayout({ children }: { children?: ReactNode }) {
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await performLogout()
     navigate('/login')
   }
 

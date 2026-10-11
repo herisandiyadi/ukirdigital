@@ -84,7 +84,8 @@ def test_forgot_password_with_phone_queues_whatsapp():
 def _login(user):
     payload = SimpleNamespace(email="a@example.com", password="pw")
     with patch.object(auth_mod.user_service, "authenticate", AsyncMock(return_value=user)):
-        return asyncio.run(auth_mod.login(payload, db=None))
+        resp = SimpleNamespace(set_cookie=lambda **k: None)
+        return asyncio.run(auth_mod.login(payload, resp, db=None))
 
 
 def test_login_unverified_user_is_forbidden():
