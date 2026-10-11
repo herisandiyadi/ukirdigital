@@ -5,29 +5,34 @@
 @layer base {
   body {
     /* Ukir Digital (light theme): clean, light workspace */
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-serat text-arang font-sans antialiased;
   }
 }
 
 @layer components {
+  /* Tombol primer: kuningan, teks serat. Fokus ring kuningan 2px. */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-kuningan px-4 py-2 text-sm font-semibold text-serat transition-colors duration-150 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
   }
+  /* Tombol sekunder: batas kayu. */
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded border border-kayu bg-serat px-4 py-2 text-sm font-semibold text-arang transition-colors duration-150 hover:bg-kayu/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-status-gagal px-4 py-2 text-sm font-semibold text-serat transition-colors duration-150 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuningan disabled:opacity-50 disabled:cursor-not-allowed;
   }
+  /* Kartu: radius 10px, batas 1px kayu. */
   .card {
-    @apply rounded-xl bg-white shadow-sm border border-gray-100 p-6;
+    @apply rounded-kartu border border-kayu bg-white p-6;
   }
+  /* Input: label di atas, radius 6px, fokus kuningan. */
   .input {
-    @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:bg-gray-50;
+    @apply w-full rounded border border-kayu bg-white px-3 py-2 text-sm text-arang focus:border-kuningan focus:outline-none focus:ring-2 focus:ring-kuningan/40 disabled:bg-serat;
   }
   .label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply block text-sm font-medium text-ampas mb-1;
   }
+  /* Chip status: teks + ikon, bukan warna saja. */
   .badge {
     @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
   }
