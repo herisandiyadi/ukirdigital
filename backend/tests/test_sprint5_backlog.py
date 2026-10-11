@@ -109,3 +109,19 @@ def test_get_me_route_declared_before_user_id():
     paths = [r.path for r in users.router.routes if "GET" in getattr(r, "methods", set())]
     assert "/me" in paths
     assert paths.index("/me") < paths.index("/{user_id}")
+
+
+def test_access_token_has_jti_for_denylist():
+    sec = importlib.import_module("app.core.security")
+    a = sec.decode_token(sec.create_access_token({"sub": str(uuid.uuid4())}))
+    b = sec.decode_token(sec.create_access_token({"sub": str(uuid.uuid4())}))
+    assert a["jti"] and b["jti"] and a["jti"] != b["jti"]
+
+
+def test_jti_revoked_helper_no_jti_is_not_revoked():
+    import asyncio
+    sec = importlib.import_module("app.core.security")
+    class _Db:
+        async def execute(self, *_a, **_k):
+            raise AssertionError("tidak boleh query tanpa jti")
+    assert asyncio.run(sec._is_jti_revoked(_Db(), {"sub": "x"})) is False
