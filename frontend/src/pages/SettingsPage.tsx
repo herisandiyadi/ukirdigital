@@ -53,7 +53,7 @@ export default function SettingsPage() {
   })
 
   const updateProfile = useMutation({
-    mutationFn: (data: ProfileForm) => api.put('/users/me', data).then(r => r.data),
+    mutationFn: (data: ProfileForm) => api.patch('/users/me', data).then(r => r.data),
     onSuccess: updated => {
       setUser(updated)
       queryClient.invalidateQueries({ queryKey: ['me'] })
@@ -67,7 +67,7 @@ export default function SettingsPage() {
 
   const changePassword = useMutation({
     mutationFn: (data: PasswordForm) =>
-      api.put('/users/me/password', data).then(r => r.data),
+      api.post('/auth/change-password', data).then(r => r.data),
     onSuccess: () => {
       toast.success('Password changed!')
       pwForm.reset()

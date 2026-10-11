@@ -25,3 +25,6 @@ pnpm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+# TypeScript incremental build cache
+*.tsbuildinfo

@@ -16,6 +16,8 @@ type EventHandler = (event: WSEvent) => void
 export function useWebSocket(onEvent?: EventHandler) {
   const wsRef = useRef<WebSocket | null>(null)
   const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // F02: setelah unmount / ganti user, jangan pernah menjadwalkan reconnect lagi.
+  const disposedRef = useRef(false)
   // Handler terbaru disimpan di ref: callback inline baru tidak lagi
   // membongkar dan membuat ulang socket setiap render.
   const onEventRef = useRef<EventHandler | undefined>(onEvent)
@@ -52,10 +54,13 @@ export function useWebSocket(onEvent?: EventHandler) {
     }
 
     ws.onclose = () => {
-      wsRef.current = null
+      // Hanya socket yang masih aktif boleh menjadwalkan reconnect.
+      if (wsRef.current === ws) wsRef.current = null
+      if (disposedRef.current) return
+      if (reconnectRef.current) clearTimeout(reconnectRef.current)
       reconnectRef.current = setTimeout(() => {
         reconnectRef.current = null
-        connect()
+        if (!disposedRef.current) connect()
       }, 3000)
     }
 
@@ -64,8 +69,10 @@ export function useWebSocket(onEvent?: EventHandler) {
 
   useEffect(() => {
     if (!userId || !hasToken) return
+    disposedRef.current = false
     connect()
     return () => {
+      disposedRef.current = true
       if (reconnectRef.current) {
         clearTimeout(reconnectRef.current)
         reconnectRef.current = null

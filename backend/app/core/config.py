@@ -32,9 +32,9 @@ class Settings(BaseSettings):
         "https://defile-demanding-concert.ngrok-free.dev",
     ]
 
-    # Anthropic / AI
+    # AI (OpenAI-compatible). Nama ANTHROPIC_API_KEY dipertahankan untuk kompatibilitas.
     ANTHROPIC_API_KEY: str = ""
-    AI_BASE_URL: str = "https://ai.sumopod.com/v1"  # Custom AI API endpoint
+    AI_BASE_URL: str = "https://ai.sumopod.com/v1"  # OpenAI-compatible endpoint
 
     # File storage
     UPLOAD_DIR: str = "uploads"

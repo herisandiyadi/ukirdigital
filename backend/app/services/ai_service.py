@@ -48,7 +48,7 @@ class AIService:
         if row and isinstance(row.value, dict):
             cfg.update(row.value)
 
-        provider = (cfg.get("provider") or "anthropic").lower().strip()
+        provider = (cfg.get("provider") or "custom").lower().strip()
         cfg["provider"] = provider
 
         api_key = (cfg.get("api_key") or self._env_api_key or "").strip()
@@ -69,8 +69,6 @@ class AIService:
     def _default_base_url(self, provider: str) -> str:
         if provider == "openai":
             return "https://api.openai.com/v1"
-        if provider == "anthropic":
-            return self._env_base_url or "https://api.anthropic.com"
         # custom provider fallback to whatever is in env (e.g. proxy)
         return self._env_base_url or ""
 

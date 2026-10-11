@@ -53,7 +53,7 @@ app.add_middleware(
 app.include_router(auth.router,        prefix="/api/v1/auth",        tags=["Auth"])
 app.include_router(users.router,       prefix="/api/v1/users",       tags=["Users"])
 app.include_router(conversions.router, prefix="/api/v1/conversions", tags=["Conversions v1"])
-app.include_router(conversions.router, prefix="/api/v1/jobs",        tags=["Jobs"])
+# BUG-B14: mount /api/v1/jobs dihapus (duplikat; frontend hanya memakai /conversions).
 app.include_router(files.router,       prefix="/api/v1/files",       tags=["Files"])
 app.include_router(admin_api.router,   prefix="/api/v1/admin",       tags=["Admin"])
 app.include_router(ws_api.router)  # WebSocket: /ws/{user_id}
