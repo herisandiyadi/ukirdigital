@@ -38,15 +38,21 @@ async def _get_setting_value(db, key: str):
 # ── Task 1 — Timeout stuck jobs ───────────────────────────────────────────────
 
 async def task_timeout_stuck_jobs() -> None:
-    """Mark jobs stuck in PROCESSING for > 30 minutes as FAILED."""
+    """Mark jobs stuck in PROCESSING for > 30 minutes as FAILED.
+
+    BUG-B08: waktu dihitung dari processing_started_at (mulai proses), bukan
+    created_at. Job yang lama mengantre tidak ikut tertandai. Fallback ke
+    created_at hanya untuk baris lama yang belum punya processing_started_at.
+    """
     cutoff = datetime.now(tz=timezone.utc) - timedelta(minutes=30)
 
     async with AsyncSessionLocal() as db:
+        started_at = func.coalesce(ConversionJob.processing_started_at, ConversionJob.created_at)
         result = await db.execute(
             select(ConversionJob).where(
                 and_(
                     ConversionJob.status == ConversionStatus.PROCESSING.value,
-                    ConversionJob.created_at < cutoff,
+                    started_at < cutoff,
                 )
             )
         )

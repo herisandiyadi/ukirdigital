@@ -49,7 +49,9 @@ class ConversionService:
 
     async def count_today(self, db: AsyncSession, user_id: uuid.UUID) -> int:
         """Count non-failed jobs created today (UTC) for a user."""
-        today_start = datetime.combine(date.today(), datetime.min.time()).replace(tzinfo=timezone.utc)
+        # BUG-B11: pakai UTC penuh, bukan date.today() (zona lokal server).
+        now_utc = datetime.now(timezone.utc)
+        today_start = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
         result = await db.execute(
             select(func.count())
             .select_from(ConversionJob)
@@ -65,8 +67,8 @@ class ConversionService:
 
     async def count_this_month(self, db: AsyncSession, user_id: uuid.UUID) -> int:
         """Count non-failed jobs created this calendar month (UTC) for a user."""
-        today = date.today()
-        month_start = datetime(today.year, today.month, 1, tzinfo=timezone.utc)
+        now_utc = datetime.now(timezone.utc)
+        month_start = datetime(now_utc.year, now_utc.month, 1, tzinfo=timezone.utc)
         result = await db.execute(
             select(func.count())
             .select_from(ConversionJob)
@@ -155,6 +157,7 @@ class ConversionService:
         start_time = time.time()
 
         job.status = ConversionStatus.PROCESSING.value
+        job.processing_started_at = datetime.now(timezone.utc)
         await db.commit()
 
         try:
@@ -239,12 +242,28 @@ class ConversionService:
 
     async def log_action(
         self,
-        db: AsyncSession,
+        db: AsyncSession | None,
         user_id: uuid.UUID,
         job_id: uuid.UUID | None,
         action: str,
         ip_address: str | None = None,
         user_agent: str | None = None,
+    ) -> None:
+        """Catat aktivitas. Dipanggil dari background task, jadi selalu pakai
+        session baru (BUG-B10): session request sudah ditutup setelah response."""
+        from app.core.database import AsyncSessionLocal
+
+        async with AsyncSessionLocal() as session:
+            await self._write_log(session, user_id, job_id, action, ip_address, user_agent)
+
+    async def _write_log(
+        self,
+        db: AsyncSession,
+        user_id: uuid.UUID,
+        job_id: uuid.UUID | None,
+        action: str,
+        ip_address: str | None,
+        user_agent: str | None,
     ) -> None:
         log = UsageLog(
             user_id=user_id,
