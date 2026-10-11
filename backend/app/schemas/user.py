@@ -47,6 +47,17 @@ class UserUpdate(BaseModel):
     avatar_url: Optional[str] = None
 
 
+class AdminUserCreate(UserCreate):
+    """Create-user payload for the admin panel.
+
+    Adds an optional role so a superadmin can create admin accounts directly.
+    Kept separate from UserCreate so the public registration endpoint cannot
+    smuggle a role in.
+    """
+
+    role: Optional[UserRole] = UserRole.USER
+
+
 class UserLimitResponse(BaseModel):
     max_conversions_per_day: int
     max_conversions_per_month: int

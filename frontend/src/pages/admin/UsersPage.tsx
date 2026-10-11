@@ -6,6 +6,7 @@ import {
 import type { User, UserLimit } from '@/types'
 import toast from 'react-hot-toast'
 import { PhoneInput } from '@/components/PhoneInput'
+import { useAuthStore } from '@/store/authStore'
 import { Search, Plus, Edit2, Sliders, UserX, Trash2, X, Download } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -30,7 +31,9 @@ export default function UsersPage() {
   const [editForm, setEditForm]     = useState<Partial<User>>({})
   const [phoneError, setPhoneError] = useState('')
   const [showCreate, setShowCreate] = useState(false)
-  const [createForm, setCreateForm] = useState({ email: '', username: '', password: '', full_name: '', phone_number: '' })
+  const [createForm, setCreateForm] = useState({ email: '', username: '', password: '', full_name: '', phone_number: '', role: 'user' })
+  const me = useAuthStore((s) => s.user)
+  const isSuperadmin = me?.role === 'superadmin'
   const [createPhoneError, setCreatePhoneError] = useState('')
 
   const PER_PAGE = 20
@@ -332,6 +335,16 @@ export default function UsersPage() {
               }}
               error={createPhoneError}
             />
+            {isSuperadmin && (
+              <div>
+                <label className="label">Role</label>
+                <select className="input" value={createForm.role} onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                  <option value="superadmin">Superadmin</option>
+                </select>
+              </div>
+            )}
             <div className="flex gap-3 pt-2">
               <button onClick={handleCreate} className="btn-primary flex-1">Buat User</button>
               <button onClick={() => setShowCreate(false)} className="btn-secondary flex-1">Batal</button>
