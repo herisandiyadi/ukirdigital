@@ -41,3 +41,8 @@ backend/uploadsZ/*
 
 # Root env for docker compose (secrets)
 .env
+
+# Output curl lokal saat uji manual
+l.json
+lo.json
+r.json
