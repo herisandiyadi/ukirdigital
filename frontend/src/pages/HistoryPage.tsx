@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { listJobs, deleteJob, getJob, downloadUrl, downloadAllUrl, downloadFile, downloadAllFiles } from '@/services/jobService'
 import type { ConversionJob } from '@/types'
 import { StatusBadge } from '@/components/StatusBadge'
+import OutputPreview from '@/components/OutputPreview'
 import toast from 'react-hot-toast'
 import { Search, Trash2, Eye, Download, X, RefreshCw } from 'lucide-react'
 import clsx from 'clsx'
@@ -279,6 +280,17 @@ export default function HistoryPage() {
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
+
+                {detail.output_files && Object.keys(detail.output_files).length > 0 && (
+                  <div>
+                    <p className="font-semibold text-ampas mb-2">Pratinjau Hasil</p>
+                    <OutputPreview
+                      jobId={detail.id}
+                      formats={Object.keys(detail.output_files)}
+                      onDownload={(fmt) => downloadFile(detail.id, fmt)}
+                    />
                   </div>
                 )}
 
