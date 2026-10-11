@@ -41,9 +41,12 @@ DEFAULT_SYSTEM_SETTINGS: dict[str, Any] = {
         "model": "claude-sonnet-4-6",
         "max_tokens": 1000,
         "analyze_before_convert": True,
-        "provider": "anthropic",  # anthropic | openai | custom
+        # BUG-B12: kode memakai SDK OpenAI (protokol chat.completions) ke endpoint
+        # OpenAI-compatible. Default provider harus sesuai protokol itu, bukan
+        # "anthropic" dengan base_url Anthropic (protokol berbeda).
+        "provider": "custom",  # openai | custom (OpenAI-compatible)
         "api_key": "",
-        "base_url": "https://api.anthropic.com",
+        "base_url": "",  # kosong = pakai AI_BASE_URL dari env
     },
 }
 
@@ -51,7 +54,7 @@ SETTING_DESCRIPTIONS: dict[str, str] = {
     "default_user_limits": "Default limits applied to every new user account",
     "conversion_settings": "Default parameters used during 3D conversion processing",
     "storage": "File storage limits and cleanup policy",
-    "ai": "Anthropic Claude API configuration for image analysis",
+    "ai": "OpenAI-compatible API configuration for image analysis",
 }
 
 

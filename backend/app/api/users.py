@@ -2,26 +2,25 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.user import UserCreate
-
 from app.core.database import get_db
 from app.core.security import require_admin, get_current_user
 from app.models.user import User
-from app.schemas.user import UserResponse, UserUpdate, UserWithLimits, UserCreate
+from app.schemas.user import UserResponse, UserUpdate, UserWithLimits
 from app.schemas.auth import MessageResponse
 from app.services.user_service import user_service
 
 router = APIRouter()
 
 
-@router.post("/users", response_model=UserResponse)
-async def create_user_route(
-    user: UserCreate,
-    db: AsyncSession = Depends(get_db),
-    current_user=Depends(require_admin),
-):
-    user_obj = await user_service.create(db, user)
-    return user_obj
+# BUG-B13: POST /users dihapus — duplikat dari POST /admin/users (yang dipakai
+# UI admin). Router ini dimount di prefix /api/v1/users, sehingga path lamanya
+# sebenarnya /api/v1/users/users.
+
+@router.get("/me", response_model=UserWithLimits, summary="Profil sendiri (beserta limits)")
+async def get_me(current_user: User = Depends(get_current_user)):
+    """Dipakai SettingsPage. Didefinisikan sebelum /{user_id} agar 'me' tidak diparse sebagai UUID."""
+    return current_user
+
 
 @router.patch("/me", response_model=UserResponse, summary="Update profil sendiri")
 async def update_me(
