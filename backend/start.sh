@@ -1,54 +1,38 @@
-#!/bin/zsh
-# Start backend with proper error handling
+#!/usr/bin/env bash
+# Start backend secara lokal (tanpa Docker). Portabel: tidak ada path hardcoded.
+# Pakai: ./start.sh   (dari folder backend/)
+set -euo pipefail
 
-cd /Users/herisandiyadi/Documents/png-converter-app/backend
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "🚀 Starting PNG Converter Backend..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Check Python version
-echo "✅ Python version:"
-python3 --version
+PY="${PYTHON:-python3}"
+echo "✅ Python: $($PY --version 2>&1)"
 
-# Check if venv/packages installed
 echo "✅ Checking dependencies..."
-python3 -c "import fastapi; print('  - FastAPI OK')" 2>/dev/null || echo "  ❌ FastAPI missing"
-python3 -c "import sqlalchemy; print('  - SQLAlchemy OK')" 2>/dev/null || echo "  ❌ SQLAlchemy missing"
-python3 -c "import anthropic; print('  - Anthropic OK')" 2>/dev/null || echo "  ❌ Anthropic missing"
+for mod in fastapi sqlalchemy uvicorn; do
+  if $PY -c "import $mod" 2>/dev/null; then
+    echo "  - $mod OK"
+  else
+    echo "  ❌ $mod missing — jalankan: pip install -r requirements.txt"
+    exit 1
+  fi
+done
 
-# Check config
 echo "✅ Checking configuration..."
-python3 << 'CONFIGEOF'
-from app.core.config import settings
-print(f"  - APP_NAME: {settings.APP_NAME}")
-print(f"  - DB: {settings.DATABASE_URL[:50]}...")
-print(f"  - API Key: {bool(settings.ANTHROPIC_API_KEY)}")
-CONFIGEOF
+if [ -z "${SECRET_KEY:-}" ]; then
+  echo "  ❌ SECRET_KEY belum di-set (lihat .env.example)"
+  exit 1
+fi
 
-# Check database
-echo "✅ Checking database connection..."
-python3 << 'DBEOF'
-import asyncio
-from sqlalchemy import text
-from app.core.database import engine
-
-async def check_db():
-    try:
-        async with engine.begin() as conn:
-            await conn.execute(text("SELECT 1"))
-            print("  ✅ Database connected")
-    except Exception as e:
-        print(f"  ❌ Database error: {str(e)[:100]}")
-
-asyncio.run(check_db())
-DBEOF
+echo "✅ Applying migrations..."
+$PY -m alembic upgrade head
 
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "🔥 Starting server on http://localhost:8000"
 echo "📚 API Docs: http://localhost:8000/docs"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
 
-# Start the server
-python3 main.py
+exec $PY -m uvicorn main:app --host 0.0.0.0 --port 8000

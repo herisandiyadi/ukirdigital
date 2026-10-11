@@ -50,6 +50,8 @@ class ConversionJob(Base):
     processing_time_seconds = Column(Float, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # BUG-B08: kapan proses benar-benar mulai; timeout dihitung dari sini.
+    processing_started_at = Column(DateTime(timezone=True), nullable=True)
     completed_at = Column(DateTime(timezone=True), nullable=True)
 
     # Relationships

@@ -75,8 +75,12 @@ seed:
 	    asyncio.run(seed_system_settings(AsyncSessionLocal()))"
 
 # ── Quality ───────────────────────────────────────────────────────────────────
+# Tes dijalankan di image backend (Python 3.13 sama dengan produksi).
+# Tidak bergantung .venv di host. Butuh: docker compose build backend
 test:
-	cd $(BACKEND_DIR) && source .venv/bin/activate && pytest -v
+	$(COMPOSE) run --rm --no-deps -v $(PWD)/$(BACKEND_DIR):/app -w /app \
+	  -e PYTHONDONTWRITEBYTECODE=1 backend \
+	  sh -c "pip install -q pytest pytest-asyncio && pytest -v -p no:cacheprovider"
 
 lint:
 	cd $(BACKEND_DIR) && source .venv/bin/activate && ruff check .
