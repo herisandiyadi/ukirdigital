@@ -18,7 +18,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const res = await api.post<LoginResponse>('/auth/login', data)
-      setAuth(res.data.user, res.data.access_token, res.data.refresh_token)
+      setAuth(res.data.user, res.data.access_token)
       navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard')
     } catch (e: any) {
       toast.error(e?.response?.data?.detail || 'Login gagal')

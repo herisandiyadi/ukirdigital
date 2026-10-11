@@ -23,7 +23,8 @@ export function useWebSocket(onEvent?: EventHandler) {
 
   const user = useAuthStore((s) => s.user)
   const userId = user?.id
-
+  // Ikut token: WS hanya bisa tersambung setelah access token ada (sesi dipulihkan).
+  const hasToken = useAuthStore((s) => !!s.accessToken)
   const connect = useCallback(() => {
     if (!userId) return
     const token = useAuthStore.getState().accessToken
@@ -62,7 +63,7 @@ export function useWebSocket(onEvent?: EventHandler) {
   }, [userId])
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId || !hasToken) return
     connect()
     return () => {
       if (reconnectRef.current) {
@@ -78,7 +79,7 @@ export function useWebSocket(onEvent?: EventHandler) {
         ws.close()
       }
     }
-  }, [userId, connect])
+  }, [userId, hasToken, connect])
 
   return wsRef
 }

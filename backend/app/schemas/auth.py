@@ -49,7 +49,8 @@ class LoginRequest(BaseModel):
 
 
 class RefreshTokenRequest(BaseModel):
-    refresh_token: str
+    # Opsional: web memakai cookie httpOnly (BUG-S04); klien lain boleh kirim body.
+    refresh_token: Optional[str] = None
 
 
 class ForgotPasswordRequest(BaseModel):

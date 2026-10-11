@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     EMAIL_VERIFY_TOKEN_EXPIRE_HOURS: int = 24
     RESET_PASSWORD_TOKEN_EXPIRE_HOURS: int = 1
 
+    # Cookie refresh token (BUG-S04): httpOnly, tidak bisa dibaca JS.
+    # COOKIE_SECURE=true di HTTPS (produksi / ngrok).
+    COOKIE_SECURE: bool = False
+    REFRESH_COOKIE_NAME: str = "refresh_token"
+
     # CORS
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",

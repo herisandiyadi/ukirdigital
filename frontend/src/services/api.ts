@@ -6,7 +6,8 @@ import { useAuthStore } from '@/store/authStore'
 // - Ngrok: use /api/v1 (proxied to localhost:8000 by vite)
 // Vite proxy: /api → http://localhost:8000
 // Result: /api/v1/auth/login → http://localhost:8000/api/v1/auth/login ✅
-const api = axios.create({ baseURL: '/api/v1' })
+// withCredentials: cookie refresh httpOnly ikut terkirim (BUG-S04).
+const api = axios.create({ baseURL: '/api/v1', withCredentials: true })
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken
@@ -19,6 +20,26 @@ api.interceptors.request.use((config) => {
 // → rekursi tak berujung.
 const REFRESH_EXEMPT = ['/auth/refresh', '/auth/login', '/auth/register']
 
+// Refresh token dibaca backend dari cookie httpOnly, jadi tidak ada di JS.
+// Satu permintaan refresh bersama, supaya beberapa 401 paralel tidak
+// memicu beberapa refresh sekaligus (rotasi membuat yang kedua gagal).
+let refreshing: Promise<string> | null = null
+
+async function refreshAccessToken(): Promise<string> {
+  if (!refreshing) {
+    refreshing = api
+      .post('/auth/refresh', {})
+      .then(({ data }) => {
+        useAuthStore.getState().setAccessToken(data.access_token)
+        return data.access_token as string
+      })
+      .finally(() => {
+        refreshing = null
+      })
+  }
+  return refreshing
+}
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -28,11 +49,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && original && !original._retry && !isExempt) {
       original._retry = true
       try {
-        const refreshToken = useAuthStore.getState().refreshToken
-        if (!refreshToken) throw new Error('No refresh token')
-        const { data } = await api.post('/auth/refresh', { refresh_token: refreshToken })
-        useAuthStore.getState().setTokens(data.access_token, data.refresh_token)
-        original.headers.Authorization = `Bearer ${data.access_token}`
+        const token = await refreshAccessToken()
+        original.headers.Authorization = `Bearer ${token}`
         return api(original)
       } catch {
         useAuthStore.getState().logout()
@@ -41,5 +59,20 @@ api.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+/**
+ * Pulihkan sesi saat app dibuka: refresh dari cookie. Dipanggil sekali di App.
+ * Tanpa ini, reload halaman membuat access token di memori hilang.
+ */
+export async function restoreSession(): Promise<void> {
+  const store = useAuthStore.getState()
+  try {
+    await refreshAccessToken()
+  } catch {
+    store.logout()
+  } finally {
+    useAuthStore.getState().setReady(true)
+  }
+}
 
 export default api

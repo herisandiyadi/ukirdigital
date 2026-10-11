@@ -35,7 +35,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def create_refresh_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    to_encode.update({"exp": expire, "type": "refresh"})
+    jti = str(uuid.uuid4())
+    to_encode.update({"exp": expire, "type": "refresh", "jti": jti})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
@@ -55,10 +56,44 @@ def create_password_reset_token(user_id: str) -> str:
         hours=settings.RESET_PASSWORD_TOKEN_EXPIRE_HOURS
     )
     return jwt.encode(
-        {"sub": user_id, "exp": expire, "type": "password_reset"},
+        {"sub": user_id, "exp": expire, "type": "password_reset", "jti": str(uuid.uuid4())},
         settings.SECRET_KEY,
         algorithm=settings.ALGORITHM,
     )
+
+
+async def revoke_token(payload: dict) -> None:
+    """Simpan jti token ke daftar cabut (BUG-S05: logout, BUG-S06: reset)."""
+    jti = payload.get("jti")
+    exp = payload.get("exp")
+    if not jti or not exp:
+        return
+    from app.models.revoked_token import RevokedToken
+    from app.core.database import AsyncSessionLocal
+
+    async with AsyncSessionLocal() as session:
+        session.add(RevokedToken(
+            jti=jti,
+            token_type=payload.get("type", "unknown"),
+            expires_at=datetime.fromtimestamp(exp, tz=timezone.utc),
+        ))
+        await session.commit()
+
+
+async def is_revoked(payload: dict) -> bool:
+    """True kalau jti token sudah dicabut."""
+    jti = payload.get("jti")
+    if not jti:
+        return False
+    from sqlalchemy import select
+    from app.models.revoked_token import RevokedToken
+    from app.core.database import AsyncSessionLocal
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(RevokedToken.id).where(RevokedToken.jti == jti)
+        )
+        return result.scalar_one_or_none() is not None
 
 
 def decode_token(token: str) -> dict:

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { useWebSocket }  from './hooks/useWebSocket'
+import { restoreSession } from './services/api'
 
 // Auth pages (small, eager-loaded)
 import LoginPage    from './pages/LoginPage'
@@ -41,6 +42,11 @@ function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  useEffect(() => {
+    // BUG-S04: pulihkan sesi dari cookie httpOnly saat app dibuka.
+    restoreSession()
+  }, [])
+
   return (
     <BrowserRouter>
       <WebSocketProvider>

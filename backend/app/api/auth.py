@@ -1,10 +1,13 @@
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, status, Query
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request, Response, status, Query
+from app.core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import (
+    revoke_token,
+    is_revoked,
     create_access_token,
     create_refresh_token,
     create_email_verify_token,
@@ -27,6 +30,31 @@ from app.schemas.user import UserCreate, UserResponse, UserWithLimits
 from app.services.user_service import user_service
 from app.services.email_service import send_verification_email, send_reset_password_email
 from app.services.whatsapp_service import send_verification_whatsapp, send_reset_password_whatsapp
+
+
+def _set_refresh_cookie(response: Response, token: str) -> None:
+    """BUG-S04: refresh token hanya di cookie httpOnly, bukan di localStorage."""
+    response.set_cookie(
+        key=settings.REFRESH_COOKIE_NAME,
+        value=token,
+        max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
+        httponly=True,
+        secure=settings.COOKIE_SECURE,
+        samesite="lax",
+        path="/api/v1/auth",
+    )
+
+
+def _clear_refresh_cookie(response: Response) -> None:
+    response.delete_cookie(
+        key=settings.REFRESH_COOKIE_NAME, path="/api/v1/auth",
+        secure=settings.COOKIE_SECURE, samesite="lax", httponly=True,
+    )
+
+
+def _refresh_from(request: Request, payload: "RefreshTokenRequest") -> str | None:
+    return request.cookies.get(settings.REFRESH_COOKIE_NAME) or payload.refresh_token
+
 
 router = APIRouter()
 
@@ -77,6 +105,7 @@ async def register(
 )
 async def login(
     payload: LoginRequest,
+    response: Response,
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -93,9 +122,11 @@ async def login(
             detail="Akun belum terverifikasi. Cek WhatsApp Anda untuk link verifikasi.",
         )
     token_data = {"sub": str(user.id)}
+    refresh = create_refresh_token(token_data)
+    _set_refresh_cookie(response, refresh)
     return LoginResponse(
         access_token=create_access_token(token_data),
-        refresh_token=create_refresh_token(token_data),
+        refresh_token=refresh,
         user=AuthUserProfile.model_validate(user),
     )
 
@@ -108,19 +139,28 @@ async def login(
     summary="Refresh access token",
 )
 async def refresh_token(
-    payload: RefreshTokenRequest,
+    request: Request,
+    response: Response,
+    payload: RefreshTokenRequest = RefreshTokenRequest(),
     db: AsyncSession = Depends(get_db),
 ):
     """
     Tukar refresh_token yang masih valid dengan access_token baru.
     Refresh token juga di-rotate (diperbarui).
     """
-    token_payload = decode_token(payload.refresh_token)
+    raw_refresh = _refresh_from(request, payload)
+    if not raw_refresh:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token tidak ada")
+    token_payload = decode_token(raw_refresh)
     if token_payload.get("type") != "refresh":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token bukan refresh token",
         )
+
+    # BUG-S05: refresh token yang sudah dicabut (logout / sudah dirotasi) ditolak.
+    if await is_revoked(token_payload):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sesi sudah berakhir. Silakan login lagi.")
 
     user_id_str = token_payload.get("sub")
     if not user_id_str:
@@ -130,10 +170,15 @@ async def refresh_token(
     if not user or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User tidak ditemukan")
 
+    # Rotasi: refresh token lama dicabut, supaya tidak bisa dipakai dua kali.
+    await revoke_token(token_payload)
+
     token_data = {"sub": str(user.id)}
+    refresh = create_refresh_token(token_data)
+    _set_refresh_cookie(response, refresh)
     return LoginResponse(
         access_token=create_access_token(token_data),
-        refresh_token=create_refresh_token(token_data),
+        refresh_token=refresh,
         user=AuthUserProfile.model_validate(user),
     )
 
@@ -145,11 +190,23 @@ async def refresh_token(
     response_model=MessageResponse,
     summary="Logout",
 )
-async def logout(current_user=Depends(get_current_user)):
+async def logout(
+    request: Request,
+    response: Response,
+    payload: RefreshTokenRequest = RefreshTokenRequest(),
+    current_user=Depends(get_current_user),
+):
     """
-    Logout user. Client harus hapus token dari storage.
-    (Untuk invalidasi server-side, implementasikan token blacklist dengan Redis.)
+    Logout: cabut refresh token di server (BUG-S05).
+    Access token masih berlaku sampai expired (15 menit); refresh token langsung tidak bisa dipakai.
     """
+    raw_refresh = _refresh_from(request, payload)
+    if raw_refresh:
+        token_payload = decode_token(raw_refresh)
+        if token_payload.get("type") == "refresh" and token_payload.get("sub") == str(current_user.id):
+            if not await is_revoked(token_payload):
+                await revoke_token(token_payload)
+    _clear_refresh_cookie(response)
     return MessageResponse(message="Logout berhasil.")
 
 
@@ -246,6 +303,13 @@ async def reset_password(
             detail="Token reset password tidak valid",
         )
 
+    # BUG-S06: token reset hanya boleh dipakai sekali.
+    if await is_revoked(token_payload):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Link reset password sudah pernah dipakai. Minta link baru.",
+        )
+
     user_id_str = token_payload.get("sub")
     if not user_id_str:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token tidak valid")
@@ -255,6 +319,7 @@ async def reset_password(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User tidak ditemukan")
 
     await user_service.update_password(db, user, payload.new_password)
+    await revoke_token(token_payload)
     return MessageResponse(message="Password berhasil direset. Silakan login.")
 
 
