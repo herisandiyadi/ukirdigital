@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
@@ -47,9 +46,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static file serving
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-app.mount("/outputs", StaticFiles(directory="outputs"), name="outputs")
+# File hasil & upload TIDAK di-mount sebagai static (BUG-S03).
+# Akses hanya lewat endpoint ber-auth: /api/v1/conversions/{id}/download/{fmt}.
 
 # Routers
 app.include_router(auth.router,        prefix="/api/v1/auth",        tags=["Auth"])

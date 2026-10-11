@@ -4,6 +4,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status, BackgroundTasks, Request
 from fastapi.responses import FileResponse, StreamingResponse
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -95,6 +96,12 @@ async def create_conversion(
     requested_formats = [f.strip().lower() for f in formats.split(",") if f.strip()]
 
     # ── Validate user limits ────────────────────────────────────────────────
+    # BUG-B09: kunci baris user (SELECT ... FOR UPDATE) supaya request paralel
+    # dari user yang sama antre. Tanpa ini, cek kuota dan insert job tidak
+    # atomik dan limit bisa terlewati. Lock dilepas saat transaksi selesai.
+    await db.execute(
+        select(User.id).where(User.id == current_user.id).with_for_update()
+    )
     lim = current_user.limits
     if lim:
         # Daily limit
