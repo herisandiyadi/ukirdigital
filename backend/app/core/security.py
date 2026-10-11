@@ -33,7 +33,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    to_encode.update({"exp": expire, "type": "access"})
+    to_encode.update({"exp": expire, "type": "access", "jti": str(uuid.uuid4())})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
@@ -127,6 +127,16 @@ def decode_access_token(token: str) -> Optional[dict]:
         return None
 
 
+async def _is_jti_revoked(db, payload: dict) -> bool:
+    jti = payload.get("jti")
+    if not jti:
+        return False
+    from sqlalchemy import select
+    from app.models.revoked_token import RevokedToken
+    res = await db.execute(select(RevokedToken.id).where(RevokedToken.jti == jti))
+    return res.scalar_one_or_none() is not None
+
+
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     db: AsyncSession = Depends(get_db),
@@ -150,6 +160,10 @@ async def get_current_user(
         user_id = uuid.UUID(user_id_str)
     except ValueError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token format")
+
+    # Denylist access token: logout mencabut jti access token seketika.
+    if await _is_jti_revoked(db, payload):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sesi sudah berakhir. Silakan login lagi.")
 
     result = await db.execute(
         select(User).options(selectinload(User.limits)).where(User.id == user_id)

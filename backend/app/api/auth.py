@@ -197,8 +197,8 @@ async def logout(
     current_user=Depends(get_current_user),
 ):
     """
-    Logout: cabut refresh token di server (BUG-S05).
-    Access token masih berlaku sampai expired (15 menit); refresh token langsung tidak bisa dipakai.
+    Logout: cabut refresh token dan access token yang sedang dipakai (BUG-S05).
+    Access token langsung tidak valid lagi (denylist per request).
     """
     raw_refresh = _refresh_from(request, payload)
     if raw_refresh:
@@ -206,6 +206,16 @@ async def logout(
         if token_payload.get("type") == "refresh" and token_payload.get("sub") == str(current_user.id):
             if not await is_revoked(token_payload):
                 await revoke_token(token_payload)
+
+    # BUG-S05 (lanjutan): cabut juga access token yang dipakai untuk logout,
+    # supaya tidak valid sampai expired.
+    auth_header = request.headers.get("authorization", "")
+    if auth_header.lower().startswith("bearer "):
+        access_payload = decode_token(auth_header[7:].strip())
+        if access_payload.get("type") == "access" and access_payload.get("jti"):
+            if not await is_revoked(access_payload):
+                await revoke_token(access_payload)
+
     _clear_refresh_cookie(response)
     return MessageResponse(message="Logout berhasil.")
 
