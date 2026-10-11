@@ -11,6 +11,7 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 import { fetchLimits, analyzeImage, startConversion, getJob, getFileBlobUrl, downloadFile, downloadAllFiles } from '@/services/jobService'
 import type { LimitsStatus, AIAnalysis, ConversionJob, ConversionMethod } from '@/types'
 import { StatusBadge } from '@/components/StatusBadge'
+import LiveReliefPreview from '@/components/LiveReliefPreview'
 import { Upload, ChevronRight, CheckCircle2, Cpu, Settings2, Download } from 'lucide-react'
 
 // ── 3D STL viewer ─────────────────────────────────────────────────────────────
@@ -34,7 +35,7 @@ function StlModel({ url }: { url: string }) {
   if (!geometry) return null
   return (
     <mesh geometry={geometry}>
-      <meshStandardMaterial color="#6366f1" />
+      <meshStandardMaterial color="#b98c53" roughness={0.75} metalness={0.05} />
     </mesh>
   )
 }
@@ -96,6 +97,7 @@ export default function ConvertPage() {
   const [resolution, setResolution] = useState(2)
   const [smoothingBlur, setSmoothingBlur] = useState(1.0)
   const [formats, setFormats] = useState<string[]>(['stl'])
+  const [showOriginal, setShowOriginal] = useState(false)
   const [outlineType, setOutlineType] = useState<'none' | 'rectangle' | 'circle'>('none')
   const [outlineThickness, setOutlineThickness] = useState(1)
   const [ballRadius, setBallRadius] = useState<number | undefined>(undefined)
@@ -346,9 +348,42 @@ export default function ConvertPage() {
       {/* ── STEP 2: Settings ── */}
       {step === 2 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Preview */}
-          <div className="card flex items-center justify-center">
-            {preview && <img src={preview} alt="preview" className="max-h-72 rounded-lg object-contain" />}
+          {/* Preview: live estimate of the relief from current settings */}
+          <div className="card">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-ampas">Preview Hasil (estimasi)</h3>
+              <div className="flex rounded-lg border border-kayu overflow-hidden text-xs">
+                <button
+                  type="button"
+                  onClick={() => setShowOriginal(false)}
+                  className={clsx('px-3 py-1.5', !showOriginal ? 'bg-primary-600 text-white' : 'bg-white text-ampas')}
+                >
+                  Relief
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowOriginal(true)}
+                  className={clsx('px-3 py-1.5', showOriginal ? 'bg-primary-600 text-white' : 'bg-white text-ampas')}
+                >
+                  Gambar Asli
+                </button>
+              </div>
+            </div>
+            {preview && (
+              showOriginal
+                ? <div className="flex items-center justify-center"><img src={preview} alt="preview" className="max-h-72 rounded-lg object-contain" /></div>
+                : <LiveReliefPreview
+                    imageUrl={preview}
+                    resolution={resolution}
+                    scale={scale}
+                    threshold={threshold}
+                    maxHeight={maxHeight}
+                    baseThickness={baseThickness}
+                    smoothing={method !== 'silhouette' ? smoothingBlur : 0}
+                    method={method}
+                    imgDims={imgDims ?? { w: 0, h: 0 }}
+                  />
+            )}
           </div>
 
           {/* Form */}
