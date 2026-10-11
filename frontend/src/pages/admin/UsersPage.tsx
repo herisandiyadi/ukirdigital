@@ -6,7 +6,8 @@ import {
 import type { User, UserLimit } from '@/types'
 import toast from 'react-hot-toast'
 import { PhoneInput } from '@/components/PhoneInput'
-import { Search, Plus, Edit2, Sliders, UserX, Trash2, X, Download } from 'lucide-react'
+import { useAuthStore } from '@/store/authStore'
+import { Search, Plus, Edit2, Sliders, UserX, Trash2, X, Download, BadgeCheck } from 'lucide-react'
 import clsx from 'clsx'
 
 const PRESETS: Record<string, Partial<UserLimit>> = {
@@ -30,7 +31,9 @@ export default function UsersPage() {
   const [editForm, setEditForm]     = useState<Partial<User>>({})
   const [phoneError, setPhoneError] = useState('')
   const [showCreate, setShowCreate] = useState(false)
-  const [createForm, setCreateForm] = useState({ email: '', username: '', password: '', full_name: '', phone_number: '' })
+  const [createForm, setCreateForm] = useState({ email: '', username: '', password: '', full_name: '', phone_number: '', role: 'user' })
+  const me = useAuthStore((s) => s.user)
+  const isSuperadmin = me?.role === 'superadmin'
   const [createPhoneError, setCreatePhoneError] = useState('')
 
   const PER_PAGE = 20
@@ -54,6 +57,12 @@ export default function UsersPage() {
     if (!confirm(`Suspend user ${u.username}?`)) return
     try { await suspendUser(u.id); toast.success('User disuspend'); load() }
     catch { toast.error('Gagal suspend') }
+  }
+
+  const handleApprove = async (u: User) => {
+    if (!confirm(`Setujui verifikasi user ${u.username}?`)) return
+    try { await updateAdminUser(u.id, { is_verified: true }); toast.success('User disetujui'); load() }
+    catch { toast.error('Gagal menyetujui user') }
   }
 
   const handleDelete = async (u: User) => {
@@ -143,12 +152,12 @@ export default function UsersPage() {
                 </td>
                 <td className="px-4 py-3 text-ampas">{u.username}</td>
                 <td className="px-4 py-3">
-                  <span className={clsx('badge', u.role === 'admin' ? 'bg-kuningan text-kuningan' : 'bg-kayu/30 text-ampas')}>
+                  <span className={clsx('badge', u.role === 'superadmin' ? 'badge-gagal' : u.role === 'admin' ? 'badge-aksen' : 'badge-netral')}>
                     {u.role}
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={clsx('badge', u.is_active ? 'bg-status-sukses text-status-sukses' : 'bg-status-gagal text-status-gagal')}>
+                  <span className={clsx('badge', !u.is_active ? 'badge-gagal' : u.is_verified ? 'badge-sukses' : 'badge-proses')}>
                     {u.is_active ? (u.is_verified ? 'Aktif' : 'Belum Verifikasi') : 'Nonaktif'}
                   </span>
                 </td>
@@ -160,7 +169,10 @@ export default function UsersPage() {
                   <div className="flex items-center gap-1">
                     <button onClick={() => { setEditUser(u); setEditForm({ full_name: u.full_name || '', username: u.username, email: u.email, role: u.role, is_active: u.is_active }) }} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-proses" title="Edit"><Edit2 size={14} /></button>
                     <button onClick={() => { setLimitUser(u); setLimitForm(u.limits ?? {}); setLimitTab('limit') }} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-kuningan" title="Atur Limit"><Sliders size={14} /></button>
-                    <button onClick={() => handleSuspend(u)} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-kuningan" title="Suspend"><UserX size={14} /></button>
+                                        {!u.is_verified && (
+                      <button onClick={() => handleApprove(u)} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-sukses" title="Setujui verifikasi"><BadgeCheck size={14} /></button>
+                    )}
+<button onClick={() => handleSuspend(u)} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-kuningan" title="Suspend"><UserX size={14} /></button>
                     <button onClick={() => handleDelete(u)} className="p-1.5 rounded hover:bg-kayu/30 text-ampas hover:text-status-gagal" title="Hapus"><Trash2 size={14} /></button>
                   </div>
                 </td>
@@ -332,6 +344,16 @@ export default function UsersPage() {
               }}
               error={createPhoneError}
             />
+            {isSuperadmin && (
+              <div>
+                <label className="label">Role</label>
+                <select className="input" value={createForm.role} onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                  <option value="superadmin">Superadmin</option>
+                </select>
+              </div>
+            )}
             <div className="flex gap-3 pt-2">
               <button onClick={handleCreate} className="btn-primary flex-1">Buat User</button>
               <button onClick={() => setShowCreate(false)} className="btn-secondary flex-1">Batal</button>

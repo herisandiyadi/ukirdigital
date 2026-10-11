@@ -19,7 +19,7 @@ from app.models.user_limit import UserLimit
 from app.models.conversion import ConversionJob, ConversionStatus
 from app.models.usage_log import UsageLog
 from app.models.system_setting import SystemSetting
-from app.schemas.user import UserResponse, UserLimitResponse, UserCreate
+from app.schemas.user import UserResponse, UserLimitResponse, UserCreate, AdminUserCreate
 from app.services.user_service import user_service
 from pydantic import BaseModel, EmailStr
 
@@ -435,15 +435,18 @@ async def update_user_limits(
 
 @router.post("/users", response_model=UserResponse, summary="Create new user (admin)")
 async def create_user_admin(
-    user: UserCreate,
+    user: AdminUserCreate,
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin),
 ):
     """Admin only — create a new user. Pembuatan akun admin/superadmin hanya oleh superadmin."""
-    if str(getattr(user.role, "value", user.role)) in ADMIN_LIKE and _role_str(admin) != "superadmin":
+    target_role = user.role or UserRole.USER
+    target_role_str = str(getattr(target_role, "value", target_role))
+    if target_role_str in ADMIN_LIKE and _role_str(admin) != "superadmin":
         raise HTTPException(status_code=403, detail="Hanya superadmin yang boleh membuat akun admin")
-    user_obj = await user_service.create(db, user)
+    user_obj = await user_service.create(db, user, role=target_role)
     return user_obj
+
 
 
 @router.post("/users/{user_id}/suspend", summary="Toggle user suspension (admin)")
