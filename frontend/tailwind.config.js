@@ -4,18 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Brand: ukir digital
-        primary: {
-          50:  '#e9fff6',    // very light green
-          100: '#c5ffe5',
-          500: '#2ECC8A',    // main brand green
-          600: '#27AE60',
-          700: '#1E8449',
+        // Design System v2 (Bengkel). Kuningan hanya untuk aksi utama, fokus, langkah aktif.
+        // alias sementara: halaman lama masih memakai primary-*; dipetakan ke kuningan
+        primary: { 50: '#F7F3EA', 100: '#EFE6D3', 200: '#D8C7A8', 400: '#A8703A', 500: '#8A4F12', 600: '#7A4410', 700: '#5C3309' },
+        serat:    '#F7F3EA',   // latar utama (kertas serat)
+        kayu:     '#D8C7A8',   // batas 1px, garis, input
+        kuningan: '#8A4F12',   // aksen tunggal
+        ampas:    '#5C4A36',   // teks sekunder
+        arang:    '#2A2118',   // teks utama
+        status: {
+          sukses: '#2F5E2A',
+          gagal:  '#9A2E1A',
+          proses: '#24557A',
         },
-        brand: {
-          dark: '#0D1117',   // main background
-          gold: '#F0A500',   // accent (cutting path / premium)
-        },
+      },
+      fontFamily: {
+        serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+        sans:  ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        DEFAULT: '6px',
+        kartu: '10px',
       },
     },
   },
