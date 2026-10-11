@@ -14,14 +14,22 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// Endpoint yang tidak boleh memicu percobaan refresh (BUG-F01).
+// Tanpa guard ini, 401 dari /auth/refresh sendiri memanggil interceptor lagi
+// → rekursi tak berujung.
+const REFRESH_EXEMPT = ['/auth/refresh', '/auth/login', '/auth/register']
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config
-    if (error.response?.status === 401 && !original._retry) {
+    const url: string = original?.url ?? ''
+    const isExempt = REFRESH_EXEMPT.some((p) => url.includes(p))
+    if (error.response?.status === 401 && original && !original._retry && !isExempt) {
       original._retry = true
       try {
         const refreshToken = useAuthStore.getState().refreshToken
+        if (!refreshToken) throw new Error('No refresh token')
         const { data } = await api.post('/auth/refresh', { refresh_token: refreshToken })
         useAuthStore.getState().setTokens(data.access_token, data.refresh_token)
         original.headers.Authorization = `Bearer ${data.access_token}`

@@ -11,8 +11,9 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://postgres:password@localhost:5432/png_converter_db"
 
-    # JWT
-    SECRET_KEY: str = "your-super-secret-key-change-in-production"
+    # JWT — BUG-S01: tanpa default. Wajib diisi lewat env/.env; app menolak
+    # start jika kosong atau terlalu pendek, agar token tidak bisa dipalsukan.
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15        # 15 menit
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
@@ -59,3 +60,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if len(settings.SECRET_KEY or "") < 32:
+    raise RuntimeError(
+        "SECRET_KEY wajib diisi minimal 32 karakter (set di .env / environment)."
+    )

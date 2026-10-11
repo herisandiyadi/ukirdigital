@@ -38,3 +38,6 @@ backend/uploadsZ/*
 *.env.local
 .idea/
 .vscode/
+
+# Root env for docker compose (secrets)
+.env

@@ -1,3 +1,4 @@
+import asyncio
 import time
 import uuid
 from pathlib import Path
@@ -157,10 +158,19 @@ class ConversionService:
         await db.commit()
 
         try:
-            # ── Step 1: AI Analysis ──────────────────────────
+            # ── Step 1: AI Analysis (optional — never fatal) ─
             if use_ai and settings.ANTHROPIC_API_KEY:
-                ai_result = await ai_service.analyze_image(job.original_file_path)
-                job.ai_analysis = ai_result
+                try:
+                    ai_result = await ai_service.analyze_image(job.original_file_path)
+                    job.ai_analysis = ai_result
+                except Exception as ai_exc:
+                    # BUG-B02: analisis AI bersifat opsional. Kegagalan AI
+                    # (kuota, jaringan, respons tak terparse) tidak boleh
+                    # membatalkan konversi yang sudah bisa jalan.
+                    job.ai_analysis = {
+                        "status": "unavailable",
+                        "reason": str(ai_exc)[:300],
+                    }
             else:
                 job.ai_analysis = None
 
@@ -185,7 +195,11 @@ class ConversionService:
                     continue
                 out_filename = f"{safe_stem}_{job_id_short}.{fmt}"
                 out_path = str(output_dir / out_filename)
-                format_handlers[fmt](job.original_file_path, out_path, conv_settings)
+                # BUG-B01: converter bersifat CPU-bound (numpy/PIL). Jalankan di
+                # threadpool agar event loop tetap responsif (/health, WS, API).
+                await asyncio.to_thread(
+                    format_handlers[fmt], job.original_file_path, out_path, conv_settings
+                )
                 output_files[fmt] = out_path
 
             job.output_files = output_files
@@ -201,7 +215,27 @@ class ConversionService:
             await db.commit()
             await db.refresh(job)
 
+        # BUG-B05: beri tahu client via WebSocket setelah hasil final tersimpan.
+        await self._notify_outcome(job)
+
         return job
+
+    async def _notify_outcome(self, job: ConversionJob) -> None:
+        """Push job_completed / job_failed ke channel user. Best-effort."""
+        from app.api.websocket import notify_job_completed, notify_job_failed
+
+        user_id, job_id = str(job.user_id), str(job.id)
+        try:
+            if job.status == ConversionStatus.COMPLETED.value:
+                # Kontrak (BUG-F04): output_files = { fmt: download_url }
+                base = f"/api/v1/conversions/{job_id}/download"
+                urls = {fmt: f"{base}/{fmt}" for fmt in (job.output_files or {})}
+                await notify_job_completed(user_id, job_id, urls)
+            elif job.status == ConversionStatus.FAILED.value:
+                await notify_job_failed(user_id, job_id, job.error_message or "Konversi gagal")
+        except Exception:
+            # Notifikasi tidak boleh membuat job gagal.
+            pass
 
     async def log_action(
         self,
