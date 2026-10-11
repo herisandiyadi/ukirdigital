@@ -86,6 +86,12 @@ async def login(
     - Return access_token (15 menit) + refresh_token (7 hari) + profil user
     """
     user = await user_service.authenticate(db, payload.email, payload.password)
+    # BUG-B06: akun wajib terverifikasi sebelum bisa login.
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Akun belum terverifikasi. Cek WhatsApp Anda untuk link verifikasi.",
+        )
     token_data = {"sub": str(user.id)}
     return LoginResponse(
         access_token=create_access_token(token_data),
@@ -206,18 +212,13 @@ async def forgot_password(
     Selalu return 200 meski email tidak terdaftar (security: prevent email enumeration).
     """
     user = await user_service.get_by_email(db, payload.email)
-    if user and user.is_active:
+    # BUG-B04: respons selalu sama. Akun tanpa nomor HP tidak dibedakan
+    # dari akun yang tidak ada (mencegah enumerasi akun).
+    if user and user.is_active and user.phone_number:
         token = create_password_reset_token(str(user.id))
-        # Kirim reset password via WhatsApp
-        if user.phone_number:
-            background_tasks.add_task(
-                send_reset_password_whatsapp, user.phone_number, user.username, token
-            )
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Nomor telepon tidak terdaftar untuk akun ini"
-            )
+        background_tasks.add_task(
+            send_reset_password_whatsapp, user.phone_number, user.username, token
+        )
     return MessageResponse(
         message="Jika akun terdaftar, link reset password telah dikirim ke WhatsApp Anda."
     )

@@ -6,6 +6,8 @@ import { useWebSocket }  from './hooks/useWebSocket'
 import LoginPage    from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import VerificationPendingPage from './pages/VerificationPendingPage'
+import VerifyEmailPage from './pages/VerifyEmailPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 
 // User pages — lazy loaded
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
@@ -49,6 +51,8 @@ export default function App() {
             <Route path="/login"    element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/verification-pending" element={<VerificationPendingPage />} />
+            <Route path="/verify-email"   element={<VerifyEmailPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             {/* ── Authenticated user ──────────────────────────────────── */}
             <Route element={<RequireAuth />}>

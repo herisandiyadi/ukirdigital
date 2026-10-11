@@ -18,7 +18,7 @@ export default function VerificationPendingPage() {
         return
       }
 
-      await api.post('/v1/auth/forgot-password', { email })
+      await api.post('/auth/forgot-password', { email })
       toast.success('Link verifikasi telah dikirim ulang ke WhatsApp!')
     } catch (e: any) {
       toast.error(e?.response?.data?.detail || 'Gagal mengirim ulang kode')
