@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
     setLoading(true)
     try {
-      await api.post('/v1/auth/register', payload)
+      await api.post('/auth/register', payload)
       toast.success('Registrasi berhasil! Cek WhatsApp untuk verifikasi.')
       navigate('/verification-pending', {
         state: {
