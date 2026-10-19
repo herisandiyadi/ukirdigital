@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
@@ -45,6 +47,42 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+FIELD_LABELS = {
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "full_name": "Nama lengkap",
+    "phone_number": "Nomor telepon",
+}
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Ubah body 422 menjadi {'detail': '<pesan>'} berupa string.
+
+    Default FastAPI mengembalikan detail berupa array objek; frontend yang
+    hanya membaca `detail` sebagai string lalu menampilkan pesan kosong,
+    sehingga user tidak tahu field mana yang salah. Handler ini merangkai
+    pesan per field jadi satu kalimat yang bisa langsung ditampilkan.
+    """
+    messages: list[str] = []
+    for error in exc.errors():
+        loc = [str(part) for part in error.get("loc", []) if part != "body"]
+        field = loc[-1] if loc else ""
+        msg = error.get("msg", "nilai tidak valid")
+        if msg.startswith("Value error, "):
+            msg = msg[len("Value error, "):]
+        elif msg == "Field required":
+            msg = "wajib diisi"
+        label = FIELD_LABELS.get(field, field.replace("_", " "))
+        messages.append(f"{label}: {msg}" if label else msg)
+
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": " ".join(messages) or "Data yang dikirim tidak valid."},
+    )
 
 # File hasil & upload TIDAK di-mount sebagai static (BUG-S03).
 # Akses hanya lewat endpoint ber-auth: /api/v1/conversions/{id}/download/{fmt}.

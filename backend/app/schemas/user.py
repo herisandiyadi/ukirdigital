@@ -1,3 +1,4 @@
+import re
 import uuid
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional, List, Any
@@ -32,11 +33,36 @@ class UserCreate(UserBase):
             raise ValueError("Username minimal 3 karakter")
         return v.lower()
 
+    @field_validator("phone_number", mode="before")
+    @classmethod
+    def normalize_phone(cls, v: Optional[str]) -> Optional[str]:
+        """Terima format lokal Indonesia dan normalkan ke E.164.
+
+        Frontend lama mengirim '081234567890' apa adanya; tanpa normalisasi
+        Pydantic menolaknya dengan 422 yang tidak bisa dibaca user. Sekarang
+        '08...' / '62...' / '8...' semuanya diterima, termasuk spasi, dash,
+        dan tanda kurung.
+        """
+        if v is None:
+            return v
+        cleaned = re.sub(r"[^\d+]", "", str(v))
+        if not cleaned:
+            return cleaned
+        # '+0812...' -> '+' + '812...' ; '+' sudah benar dibiarkan apa adanya
+        if cleaned.startswith("+"):
+            return "+" + cleaned[1:].lstrip("0")
+        digits = cleaned.lstrip("0")
+        if digits.startswith("62") and len(digits) > 10:
+            return "+" + digits
+        return "+62" + digits
+
     @field_validator("phone_number")
     @classmethod
     def validate_phone(cls, v: Optional[str]) -> Optional[str]:
-        if v and not (v.startswith("+") and len(v) >= 10 and v[1:].isdigit()):
-            raise ValueError("Nomor telepon harus dalam format internasional (contoh: +62812345678)")
+        if not v:
+            raise ValueError("Nomor telepon wajib diisi")
+        if not (v.startswith("+") and len(v) >= 10 and v[1:].isdigit()):
+            raise ValueError("Nomor telepon harus dalam format internasional (contoh: +628****5678)")
         return v
 
 
@@ -52,7 +78,8 @@ class AdminUserCreate(UserCreate):
 
     Adds an optional role so a superadmin can create admin accounts directly.
     Kept separate from UserCreate so the public registration endpoint cannot
-    smuggle a role in.
+    smuggle a role in. Nomor telepon opsional di sini: admin kadang membuat
+    akun tanpa WhatsApp.
     """
 
     role: Optional[UserRole] = UserRole.USER

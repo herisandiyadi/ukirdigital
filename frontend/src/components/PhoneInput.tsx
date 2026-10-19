@@ -1,4 +1,5 @@
 import React from 'react'
+import { normalizePhone } from '@/lib/phone'
 
 interface PhoneInputProps {
   value: string
@@ -15,15 +16,11 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let input = e.target.value
-    
-    // Allow only + and digits
-    input = input.replace(/[^\d+]/g, '')
-    
-    // Ensure it starts with +
-    if (input && !input.startsWith('+')) {
-      input = '+' + input
-    }
-    
+
+    // Normalisasi ke E.164 saat diketik, supaya '0812...' tidak pernah
+    // lolos ke backend sebagai nomor tanpa kode negara (penyebab 422).
+    input = normalizePhone(input)
+
     // Limit to reasonable length
     if (input.length > 20) {
       input = input.slice(0, 20)
