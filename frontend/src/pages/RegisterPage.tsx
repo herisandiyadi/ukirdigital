@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form'
 import api from '@/services/api'
 import toast from 'react-hot-toast'
 import { PhoneInput } from '@/components/PhoneInput'
+import { normalizePhone, isValidPhone } from '@/lib/phone'
+import { extractErrorMessage } from '@/lib/errors'
 
 interface FormData { 
   email: string
@@ -25,9 +27,8 @@ export default function RegisterPage() {
   const phoneValue = watch('phone_number')
 
   const validatePhone = (phone: string): boolean => {
-    const phoneRegex = /^\+\d{10,20}$/
-    if (!phoneRegex.test(phone)) {
-      setPhoneError('Format: +62812345678 (min 10 digit)')
+    if (!isValidPhone(phone)) {
+      setPhoneError('Format: +628****5678 (min 10 digit)')
       return false
     }
     setPhoneError('')
@@ -35,22 +36,26 @@ export default function RegisterPage() {
   }
 
   const onSubmit = async (data: FormData) => {
-    if (!validatePhone(data.phone_number)) {
+    // Normalisasi terakhir sebelum kirim: PhoneInput sudah menormalkan saat
+    // mengetik, tapi nilai bisa datang dari autofill browser.
+    const payload = { ...data, phone_number: normalizePhone(data.phone_number) }
+
+    if (!validatePhone(payload.phone_number)) {
       return
     }
 
     setLoading(true)
     try {
-      await api.post('/v1/auth/register', data)
+      await api.post('/v1/auth/register', payload)
       toast.success('Registrasi berhasil! Cek WhatsApp untuk verifikasi.')
       navigate('/verification-pending', {
         state: {
-          phone_number: data.phone_number,
-          email: data.email
+          phone_number: payload.phone_number,
+          email: payload.email
         }
       })
     } catch (e: any) {
-      toast.error(e?.response?.data?.detail || 'Registrasi gagal')
+      toast.error(extractErrorMessage(e, 'Registrasi gagal'))
     } finally {
       setLoading(false)
     }
