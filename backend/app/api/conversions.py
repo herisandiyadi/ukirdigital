@@ -18,7 +18,7 @@ from app.schemas.conversion import (
     LimitsStatusResponse,
 )
 from app.services.conversion_service import conversion_service
-from app.services.ai_service import ai_service
+from app.services.ai_service import ai_service, AIAnalysisError
 from app.services.job_runner import process_job
 from app.utils.file_handler import save_upload_file, delete_file
 
@@ -44,6 +44,13 @@ async def get_limits(
     return LimitsStatusResponse(**status_data)
 
 
+DOWNLOAD_MIME_TYPES = {
+    "stl": "model/stl",
+    "svg": "image/svg+xml",
+    "dxf": "application/dxf",
+}
+
+
 # ── POST /analyze  (upload + Claude analysis only) ───────────────────────────
 
 @router.post("/analyze", response_model=AnalyzeResponse, summary="Upload gambar + analisis AI")
@@ -62,6 +69,13 @@ async def analyze_image(
     saved_path, original_name, size_bytes = await save_upload_file(file)
     try:
         result = await ai_service.analyze_image(saved_path)
+    except AIAnalysisError as exc:
+        raise HTTPException(
+            status_code=(
+                status.HTTP_504_GATEWAY_TIMEOUT if exc.timeout else status.HTTP_502_BAD_GATEWAY
+            ),
+            detail=exc.user_message,
+        )
     finally:
         delete_file(saved_path)
     return AnalyzeResponse(filename=original_name, analysis=result)
@@ -231,7 +245,11 @@ async def download_file(
 
     stem = Path(job.original_filename).stem
     download_name = f"{stem}_{job_id.hex[:8]}.{fmt}"
-    return FileResponse(file_path, filename=download_name, media_type="application/octet-stream")
+    return FileResponse(
+        file_path,
+        filename=download_name,
+        media_type=DOWNLOAD_MIME_TYPES.get(fmt, "application/octet-stream"),
+    )
 
 
 # ── GET /{job_id}/download-all  (ZIP) ────────────────────────────────────────

@@ -162,7 +162,7 @@ class ConversionService:
 
         try:
             # ── Step 1: AI Analysis (optional — never fatal) ─
-            if use_ai and settings.ANTHROPIC_API_KEY:
+            if use_ai and await ai_service.should_analyze_on_convert():
                 try:
                     ai_result = await ai_service.analyze_image(job.original_file_path)
                     job.ai_analysis = ai_result
