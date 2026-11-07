@@ -95,6 +95,8 @@ def test_ai_failure_does_not_fail_conversion():
         with patch.object(cs_mod, "settings") as s, \
              patch.object(cs_mod.ai_service, "analyze_image",
                           AsyncMock(side_effect=RuntimeError("quota habis"))), \
+             patch.object(cs_mod.ai_service, "should_analyze_on_convert",
+                          AsyncMock(return_value=True)), \
              patch.object(cs_mod, "convert_png_to_svg", lambda i, o, c: None), \
              patch.object(svc, "_notify_outcome", AsyncMock()):
             s.ANTHROPIC_API_KEY = "sk-test"

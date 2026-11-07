@@ -40,6 +40,7 @@ DEFAULT_SYSTEM_SETTINGS: dict[str, Any] = {
         "enabled": True,
         "model": "claude-sonnet-4-6",
         "max_tokens": 1000,
+        "timeout_s": 15,  # batas waktu analisis AI (detik)
         "analyze_before_convert": True,
         # BUG-B12: kode memakai SDK OpenAI (protokol chat.completions) ke endpoint
         # OpenAI-compatible. Default provider harus sesuai protokol itu, bukan

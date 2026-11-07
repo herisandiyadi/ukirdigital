@@ -626,6 +626,28 @@ async def update_defaults(
     return {"updated": list(body.keys())}
 
 
+@router.post("/settings/ai/test", summary="Tes koneksi AI (tanpa menyimpan)")
+async def test_ai_connection(
+    body: Optional[dict] = None,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Kirim ping kecil (teks + gambar 8x8) ke model AI. api_key tidak pernah dikembalikan."""
+    from app.services.ai_service import ai_service
+
+    override = {
+        k: v for k, v in (body or {}).items()
+        if k in {"provider", "base_url", "model", "api_key"} and isinstance(v, str)
+    }
+    result = await ai_service.test_connection(override)
+    try:
+        db.add(UsageLog(user_id=admin.id, job_id=None, action="ai_test"))
+        await db.commit()
+    except Exception:
+        await db.rollback()
+    return result
+
+
 # ── Preset Packages CRUD ──────────────────────────────────────────────────────
 
 @router.get("/settings/presets", summary="List preset packages")
